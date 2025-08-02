@@ -142,10 +142,10 @@ export interface FormData {
   additionalNotes: string;
 }
 export const formData: FormData = {
-  firstName: "Uchiha",
-  lastName: "Madara",
-  email: "madara@email.com",
-  mobileNumber: "0856517888",
+  firstName: "",
+  lastName: "",
+  email: "",
+  mobileNumber: "",
   dateOfBirth: "",
   streetAddress: "",
   city: "",
@@ -154,7 +154,7 @@ export const formData: FormData = {
   country: "",
   title: null,
   maritalStatus: "",
-  developer: "yes",
+  developer: "",
   job: "",
   educations: [
     {

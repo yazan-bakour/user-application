@@ -1,10 +1,21 @@
-import {Button} from '@heroui/button'; 
+import { Button } from "@heroui/button";
+import Link from "next/link";
 
 export default function Home() {
   return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Button>Hero Ui</Button>
+    <div>
+      <main className="flex flex-col gap-[32px] row-start-1 items-center sm:items-start">
+        <h1 className="text-4xl font-bold text-primary-800">
+          Welcome to User Application
+        </h1>
+        <p className="text-lg text-gray-600 max-w-md">
+          Get started with our wizard to set up your profile and preferences.
+        </p>
+        <Link href="/wizard">
+          <Button size="lg" color="primary" variant="flat" radius="none">
+            Go to Wizard
+          </Button>
+        </Link>
       </main>
     </div>
   );

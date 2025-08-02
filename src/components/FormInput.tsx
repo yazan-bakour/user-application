@@ -1,36 +1,14 @@
 "use client";
 
-import { Input } from "@heroui/input";
+import { Input, InputProps, Skeleton } from "@heroui/react";
 import { forwardRef } from "react";
-import { FieldError, UseFormRegisterReturn } from "react-hook-form";
+import { FieldError } from "react-hook-form";
 
-interface FormInputProps {
-  type?: string;
-  size?: "sm" | "md" | "lg";
-  labelPlacement?: "inside" | "outside" | "outside-left";
-  className?: string;
-  radius?: "none" | "sm" | "md" | "lg" | "full";
-  label: string;
-  placeholder?: string;
-  value?: string;
-  isReadOnly?: boolean;
-  isInvalid?: boolean;
-  errorMessage?: string;
-  registration?: UseFormRegisterReturn;
+interface FormInputProps extends Omit<InputProps, "children"> {
   error?: FieldError;
-  defaultErrorMessage?: string;
-  classNames?: {
-    base?: string;
-    label?: string;
-    inputWrapper?: string;
-    innerWrapper?: string;
-    mainWrapper?: string;
-    input?: string;
-    clearButton?: string;
-    helperWrapper?: string;
-    description?: string;
-    errorMessage?: string;
-  };
+  isLoading?: boolean;
+  fieldValue?: string | number;
+  id?: string;
 }
 
 const FormInput = forwardRef<HTMLInputElement, FormInputProps>(
@@ -45,27 +23,37 @@ const FormInput = forwardRef<HTMLInputElement, FormInputProps>(
       placeholder,
       value = "",
       isReadOnly = false,
-      isInvalid,
       errorMessage,
-      registration,
       error,
-      defaultErrorMessage,
       classNames,
+      isLoading = false,
+      id,
       ...props
     },
     ref
   ) => {
-    const finalErrorMessage =
-      errorMessage || error?.message || defaultErrorMessage;
+    const finalErrorMessage = errorMessage || error?.message;
 
-    const finalIsInvalid = isInvalid !== undefined ? isInvalid : !!error;
+    const ariaLabel = id
+      ? `${id}-input`
+      : typeof label === "string"
+      ? label
+      : undefined;
 
-    // Default classNames with border-b-1 applied to mainWrapper
     const defaultClassNames = {
-      inputWrapper: "border-b-1",
+      inputWrapper: "border-b-1 border-primary",
       mainWrapper: "h-[64px]",
+      label: "text-xs",
       ...classNames,
     };
+
+    if (isLoading) {
+      return (
+        <Skeleton className="rounded-none">
+          <div className="h-10 w-full bg-default-200"></div>
+        </Skeleton>
+      );
+    }
 
     return (
       <Input
@@ -79,10 +67,10 @@ const FormInput = forwardRef<HTMLInputElement, FormInputProps>(
         placeholder={placeholder}
         value={value}
         isReadOnly={isReadOnly}
-        isInvalid={finalIsInvalid}
         errorMessage={finalErrorMessage}
         classNames={defaultClassNames}
-        {...registration}
+        id={id}
+        aria-label={ariaLabel}
         {...props}
       />
     );

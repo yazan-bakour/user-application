@@ -13,14 +13,6 @@
 .bg-secondary-100 {
   background-color: rgba(206, 206, 206, 0.068);
 }
-.text-secondary {
-  color: rgb(var(--heroui-light));
-}
-/* .group-data-\[filled\=true\]\:-translate-y-\[calc\(100\%_\+_var\(--heroui-font-size-small\)\/2_\+_20px\)\]:is(:where(.group)[data-filled="true"] *) {
-    --tw-translate-y: calc(calc(100% + var(--heroui-font-size-small) / 2 + 20px) * -1);
-}
-.group-data-\[has-helper\=true\]\:-translate-y-\[calc\(100\%_\+_var\(--heroui-font-size-small\)\/2_\+_30px\)\]:is(:where(.group)[data-has-helper="true"] *) {
-    --tw-translate-y: calc(calc(100% + var(--heroui-font-size-small) / 2 + 30px) * -1);} */
 
 body {
   font-family: Arial, Helvetica, sans-serif;

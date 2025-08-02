@@ -39,9 +39,9 @@ export default function WizardPage() {
   const totalSteps = 4;
   const stepNames = [
     "Personal Information",
-    "Career & Education",
-    "Skills & Languages",
-    "Portfolio & Goals",
+    "Education & Experience",
+    "Skills & Certifications",
+    "Portfolio & Projects",
   ];
 
   const onSubmit = async (data: FormData) => {
@@ -62,7 +62,6 @@ export default function WizardPage() {
     const isFormValid = await trigger();
 
     if (!isFormValid) {
-      // Form is invalid, errors will be displayed automatically
       console.log("Form validation failed:", errors);
       return false;
     }
@@ -130,95 +129,131 @@ export default function WizardPage() {
   const hasTouchedFields = Object.keys(touchedFields).length > 0;
   return (
     <FormProvider {...methods}>
-      <div className="font-sans grid grid-rows-[20px_1fr_20px] justify-items-center min-h-screen p-8 pb-20 gap-0">
-        <pre className="absolute left-10 top-10 text-xs">
+      <div className="flex flex-col gap-8 w-full mx-auto">
+        {/* <pre className="fixed left-10 top-20 text-xs">
           {JSON.stringify(
             {
-              // touchedFields,
-              // currentStep,
+              touchedFields,
+              currentStep,
               isEdit,
-              // isDirty,
+              isDirty,
               isValid,
               errors: Object.keys(errors),
-              // values: watchedValues,
+              errorMessages: Object.values(errors).map(
+                (error) => error.message || "Invalid input"
+              ),
+              values: watchedValues,
             },
             null,
             2
           )}
-        </pre>
+        </pre> */}
 
-        <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start max-w-3xl w-full">
-          <div className="w-full">
-            <h1 className="text-2xl font-bold mb-2">User Information Wizard</h1>
-            <p className="text-gray-600">
-              Step {currentStep + 1} of {totalSteps}
-            </p>
-            <p className="text-lg font-medium mt-2">{stepNames[currentStep]}</p>
+        <main>
+          <div className="flex justify-between w-full mb-6">
+            <div className="w-full">
+              <h1 className="text-4xl font-bold mb-2 text-primary-800">
+                User Information Wizard
+              </h1>
+              <p className="text-primary-900 mb-10">
+                Step {currentStep + 1} of {totalSteps}
+              </p>
+              <p className="text-xl font-bold">{stepNames[currentStep]}</p>
+            </div>
           </div>
 
-          <Form onSubmit={handleSubmit(onSubmit)} className="w-full">
-            <div className="flex justify-between gap-4 w-full mb-6 border-b-[0.5] border-[#ffffff38] pb-3">
-              <div className="flex gap-2">
-                {!isEdit ? (
-                  <Button
-                    onPress={handleEdit}
-                    disabled={isLoading}
-                    className={
-                      hasTouchedFields ? "touched-fields-animate-simple" : ""
-                    }
-                  >
-                    Edit
-                  </Button>
-                ) : (
-                  <>
-                    {currentStep < totalSteps - 1 ? (
-                      <Button
-                        onPress={() => onSave(watchedValues)}
-                        variant="bordered"
-                        disabled={isSubmitting}
-                        isLoading={isSubmitting}
-                      >
-                        Save
-                      </Button>
-                    ) : (
-                      <Button
-                        type="submit"
-                        color="primary"
-                        disabled={isSubmitting}
-                        isLoading={isSubmitting}
-                      >
-                        Submit
-                      </Button>
-                    )}
-                    <Button onPress={handleCancel} variant="light">
-                      Cancel
-                    </Button>
-                  </>
-                )}
-              </div>
-              {!isEdit && (
-                <div className="flex gap-2">
-                  {currentStep > 0 && (
-                    <Button onPress={handleBack} variant="bordered">
-                      Back
-                    </Button>
-                  )}
-
-                  {currentStep < totalSteps - 1 ? (
-                    <Button
-                      onPress={handleNext}
-                      color="primary"
-                      disabled={isLoading}
-                    >
-                      Next
-                    </Button>
-                  ) : null}
-                </div>
-              )}
-            </div>
-
+          <Form
+            onSubmit={handleSubmit(onSubmit)}
+            className="w-full"
+            id="wizard-form"
+          >
             {renderCurrentStep()}
           </Form>
+
+          <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 p-4 shadow-lg z-50">
+            <div className="max-w-5xl mx-auto flex justify-between item-center gap-6 pl-6">
+              <h4 className="text-sm text-gray-500 mb-2 flex">
+                Press on Edit to change form values and then save or submit
+              </h4>
+              <div className="flex flex-row gap-4">
+                {!isEdit && (
+                  <div className="flex gap-2">
+                    {currentStep > 0 && (
+                      <Button
+                        radius="none"
+                        onPress={handleBack}
+                        variant="bordered"
+                      >
+                        Back
+                      </Button>
+                    )}
+
+                    {currentStep < totalSteps - 1 ? (
+                      <Button
+                        variant="flat"
+                        radius="none"
+                        onPress={handleNext}
+                        color="primary"
+                        disabled={isLoading}
+                      >
+                        Next
+                      </Button>
+                    ) : null}
+                  </div>
+                )}
+                <div className="flex gap-2">
+                  {!isEdit ? (
+                    <Button
+                      variant="flat"
+                      radius="none"
+                      color="warning"
+                      onPress={handleEdit}
+                      disabled={isLoading}
+                      className={
+                        hasTouchedFields ? "touched-fields-animate-simple" : ""
+                      }
+                    >
+                      Edit
+                    </Button>
+                  ) : (
+                    <>
+                      {currentStep < totalSteps - 1 ? (
+                        <Button
+                          radius="none"
+                          onPress={() => onSave(watchedValues)}
+                          variant="flat"
+                          disabled={isSubmitting}
+                          isLoading={isSubmitting}
+                          color="primary"
+                        >
+                          Save
+                        </Button>
+                      ) : (
+                        <Button
+                          variant="flat"
+                          radius="none"
+                          type="submit"
+                          form="wizard-form"
+                          color="primary"
+                          disabled={isSubmitting}
+                          isLoading={isSubmitting}
+                        >
+                          Submit
+                        </Button>
+                      )}
+                      <Button
+                        radius="none"
+                        onPress={handleCancel}
+                        variant="light"
+                      >
+                        Cancel
+                      </Button>
+                    </>
+                  )}
+                </div>
+              </div>
+            </div>
+          </div>
         </main>
       </div>
     </FormProvider>

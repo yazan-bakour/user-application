@@ -1,17 +1,8 @@
 "use client";
 
-import { Input } from "@heroui/input";
-import {
-  Select,
-  SelectItem,
-  Button,
-  Textarea,
-  Checkbox,
-  Card,
-  CardBody,
-  CardHeader,
-  Skeleton
-} from "@heroui/react";
+import FormInput from "../../components/FormInput";
+import FormSelect from "../../components/FormSelect";
+import { SelectItem, Button, Textarea, Checkbox } from "@heroui/react";
 import { useFormContext, useFieldArray } from "react-hook-form";
 import { memo } from "react";
 import { FormData, DegreeType, JobExperience, Education } from "./service";
@@ -23,96 +14,32 @@ interface CareerProps {
 const Career = memo(({ isEdit }: CareerProps) => {
   const {
     register,
-    formState: { errors, isLoading },
+    formState: { errors, isLoading, isValid },
     watch,
     setValue,
     control,
+    trigger,
   } = useFormContext<FormData>();
 
-  const { fields: educationFields, append: appendEducation, remove: removeEducation } = useFieldArray({
+  const {
+    fields: educationFields,
+    append: appendEducation,
+    remove: removeEducation,
+  } = useFieldArray({
     control,
     name: "educations",
   });
 
-  const { fields: experienceFields, append: appendExperience, remove: removeExperience } = useFieldArray({
+  const {
+    fields: experienceFields,
+    append: appendExperience,
+    remove: removeExperience,
+  } = useFieldArray({
     control,
     name: "jobExperiences",
   });
 
   const watchedValues = watch();
-
-  if (isLoading) {
-    return (
-      <div className="flex flex-col gap-6 w-full">
-        <Card>
-          <CardHeader>
-            <Skeleton className="rounded-lg">
-              <div className="h-6 w-32 bg-default-200"></div>
-            </Skeleton>
-          </CardHeader>
-          <CardBody className="flex flex-col gap-6">
-            <Card className="border">
-              <CardHeader>
-                <Skeleton className="rounded-lg">
-                  <div className="h-5 w-28 bg-default-200"></div>
-                </Skeleton>
-              </CardHeader>
-              <CardBody className="flex flex-col gap-4">
-                <Skeleton className="rounded-lg">
-                  <div className="h-14 w-full bg-default-200"></div>
-                </Skeleton>
-                <Skeleton className="rounded-lg">
-                  <div className="h-14 w-full bg-default-200"></div>
-                </Skeleton>
-                <Skeleton className="rounded-lg">
-                  <div className="h-14 w-full bg-default-200"></div>
-                </Skeleton>
-              </CardBody>
-            </Card>
-          </CardBody>
-        </Card>
-
-        <Card>
-          <CardHeader>
-            <Skeleton className="rounded-lg">
-              <div className="h-6 w-40 bg-default-200"></div>
-            </Skeleton>
-          </CardHeader>
-          <CardBody className="flex flex-col gap-6">
-            <Card className="border">
-              <CardHeader>
-                <Skeleton className="rounded-lg">
-                  <div className="h-5 w-32 bg-default-200"></div>
-                </Skeleton>
-              </CardHeader>
-              <CardBody className="flex flex-col gap-4">
-                <Skeleton className="rounded-lg">
-                  <div className="h-14 w-full bg-default-200"></div>
-                </Skeleton>
-                <Skeleton className="rounded-lg">
-                  <div className="h-14 w-full bg-default-200"></div>
-                </Skeleton>
-                <div className="flex gap-4">
-                  <Skeleton className="rounded-lg flex-1">
-                    <div className="h-14 w-full bg-default-200"></div>
-                  </Skeleton>
-                  <Skeleton className="rounded-lg flex-1">
-                    <div className="h-14 w-full bg-default-200"></div>
-                  </Skeleton>
-                </div>
-                <Skeleton className="rounded-lg">
-                  <div className="h-5 w-40 bg-default-200"></div>
-                </Skeleton>
-                <Skeleton className="rounded-lg">
-                  <div className="h-20 w-full bg-default-200"></div>
-                </Skeleton>
-              </CardBody>
-            </Card>
-          </CardBody>
-        </Card>
-      </div>
-    );
-  }
 
   const addNewEducation = () => {
     const newEducation: Education = {
@@ -150,205 +77,292 @@ const Career = memo(({ isEdit }: CareerProps) => {
   };
 
   return (
-    <div className="flex flex-col gap-6 w-full">
-      <Card>
-        <CardHeader className="flex justify-between items-center">
-          <h3 className="text-lg font-semibold">Education</h3>
+    <div className="gap-8 w-full grid grid-cols-1 md:grid-cols-2">
+      <div>
+        <div className="flex justify-between items-center mb-1">
+          <h4 className="text-md font-medium">Education</h4>
           {isEdit && (
             <Button
               color="primary"
-              variant="bordered"
+              variant="light"
               size="sm"
               onPress={addNewEducation}
+              className="rounded-none"
             >
               Add Education
             </Button>
           )}
-        </CardHeader>
-        <CardBody className="flex flex-col gap-6">
+        </div>
+        <div className="flex flex-col gap-6">
           {educationFields.map((field, index) => (
-            <Card key={field.id} className="border">
-              <CardHeader className="flex justify-between items-center">
-                <h4 className="text-md font-medium">Education #{index + 1}</h4>
+            <div key={field.id} className="border-none">
+              <div className="flex justify-between items-center mb-4">
+                {index > 0 && (
+                  <h4 className="text-md font-medium">
+                    Education #{index + 1}
+                  </h4>
+                )}
                 {isEdit && educationFields.length > 1 && index > 0 && (
                   <Button
                     color="danger"
                     variant="light"
                     size="sm"
                     onPress={() => removeEducationEntry(index)}
+                    className="rounded-none"
                   >
                     Remove
                   </Button>
                 )}
-              </CardHeader>
-              <CardBody className="flex flex-col gap-4">
-                <Input
+              </div>
+              <div className="flex flex-col">
+                <FormInput
                   type="text"
                   label="University Name"
                   placeholder="Enter your university name"
-                  value={watchedValues.educations?.[index]?.universityName || ""}
-                  isDisabled={!isEdit}
-                  isInvalid={!!errors.educations?.[index]?.universityName}
-                  errorMessage={errors.educations?.[index]?.universityName?.message || "University name is required"}
+                  value={
+                    watchedValues.educations?.[index]?.universityName || ""
+                  }
+                  isReadOnly={!isEdit}
+                  isLoading={isLoading}
+                  error={errors.educations?.[index]?.universityName}
+                  isInvalid={
+                    !isValid && !!errors.educations?.[index]?.universityName
+                  }
                   {...register(`educations.${index}.universityName`, {
-                  required: "University name is required",
+                    required: "University name is required",
+                    onChange: () =>
+                      trigger(`educations.${index}.universityName`),
                   })}
                 />
 
-                <Select
+                <FormSelect
                   label="Degree Type"
                   placeholder="Select your degree type"
-                  isDisabled={!isEdit}
-                  selectedKeys={watchedValues.educations?.[index]?.degreeType ? [watchedValues.educations[index].degreeType] : []}
-                  isInvalid={!!errors.educations?.[index]?.degreeType}
-                  errorMessage={errors.educations?.[index]?.degreeType?.message || "Degree type is required"}
-                  {...register(`educations.${index}.degreeType`, { required: "Degree type is required" })}
+                  isReadOnly={!isEdit}
+                  isLoading={isLoading}
+                  selectedKeys={
+                    watchedValues.educations?.[index]?.degreeType
+                      ? [watchedValues.educations[index].degreeType]
+                      : []
+                  }
+                  error={errors.educations?.[index]?.degreeType}
+                  {...register(`educations.${index}.degreeType`, {
+                    required: "Degree type is required",
+                  })}
                   onSelectionChange={(keys) => {
                     const selectedKey = Array.from(keys)[0] as DegreeType;
                     if (selectedKey) {
-                      setValue(`educations.${index}.degreeType`, selectedKey, { shouldValidate: true });
+                      setValue(`educations.${index}.degreeType`, selectedKey, {
+                        shouldValidate: true,
+                      });
                     }
                   }}
                 >
                   {Object.values(DegreeType).map((degree) => (
-                    <SelectItem key={degree}>
-                      {degree}
-                    </SelectItem>
+                    <SelectItem key={degree}>{degree}</SelectItem>
                   ))}
-                </Select>
+                </FormSelect>
 
-                <Input
-                  type="text"
+                <FormInput
                   label="Course Name"
                   placeholder="Enter your course/major name"
                   value={watchedValues.educations?.[index]?.courseName || ""}
-                  isDisabled={!isEdit}
-                  isInvalid={!!errors.educations?.[index]?.courseName}
-                  errorMessage={errors.educations?.[index]?.courseName?.message || "Course name is required"}
+                  isReadOnly={!isEdit}
+                  isLoading={isLoading}
+                  error={errors.educations?.[index]?.courseName}
+                  isInvalid={
+                    !isValid && !!errors.educations?.[index]?.courseName
+                  }
                   {...register(`educations.${index}.courseName`, {
                     required: "Course name is required",
+                    onChange: () => trigger(`educations.${index}.courseName`),
                   })}
                 />
-              </CardBody>
-            </Card>
+              </div>
+            </div>
           ))}
-        </CardBody>
-      </Card>
+        </div>
+      </div>
 
-      <Card>
-        <CardHeader className="flex justify-between items-center">
-          <h3 className="text-lg font-semibold">Job Experience</h3>
+      <div>
+        <div className="flex justify-between items-center mb-1">
+          <h4 className="text-md font-medium">Job Experience</h4>
           {isEdit && (
             <Button
               color="primary"
-              variant="bordered"
+              variant="light"
               size="sm"
               onPress={addNewExperience}
+              className="rounded-none"
             >
               Add Experience
             </Button>
           )}
-        </CardHeader>
-        <CardBody className="flex flex-col gap-6">
+        </div>
+        <div className="flex flex-col gap-4">
           {experienceFields.map((field, index) => (
-            <Card key={field.id} className="border">
-              <CardHeader className="flex justify-between items-center">
-                <h4 className="text-md font-medium">Experience #{index + 1}</h4>
+            <div key={field.id} className="border-none">
+              <div className="flex justify-between items-center mb-4">
+                {index > 0 && (
+                  <h4 className="text-md font-medium">
+                    Experience #{index + 1}
+                  </h4>
+                )}
                 {isEdit && experienceFields.length > 1 && index > 0 && (
                   <Button
                     color="danger"
                     variant="light"
                     size="sm"
                     onPress={() => removeExperienceEntry(index)}
+                    className="rounded-none"
                   >
                     Remove
                   </Button>
                 )}
-              </CardHeader>
-              <CardBody className="flex flex-col gap-4">
-                <Input
+              </div>
+              <div className="flex flex-col">
+                <FormInput
                   type="text"
                   label="Job Title"
                   placeholder="Enter job title"
                   value={watchedValues.jobExperiences?.[index]?.jobTitle || ""}
-                  isDisabled={!isEdit}
-                  isInvalid={!!errors.jobExperiences?.[index]?.jobTitle}
-                  errorMessage={errors.jobExperiences?.[index]?.jobTitle?.message || "Job title is required"}
+                  isReadOnly={!isEdit}
+                  isLoading={isLoading}
+                  error={errors.jobExperiences?.[index]?.jobTitle}
+                  isInvalid={
+                    !isValid && !!errors.jobExperiences?.[index]?.jobTitle
+                  }
                   {...register(`jobExperiences.${index}.jobTitle`, {
                     required: "Job title is required",
+                    onChange: () => trigger(`jobExperiences.${index}.jobTitle`),
                   })}
                 />
 
-                <Input
+                <FormInput
                   type="text"
                   label="Company Name"
                   placeholder="Enter company name"
-                  value={watchedValues.jobExperiences?.[index]?.companyName || ""}
-                  isDisabled={!isEdit}
-                  isInvalid={!!errors.jobExperiences?.[index]?.companyName}
-                  errorMessage={errors.jobExperiences?.[index]?.companyName?.message || "Company name is required"}
+                  value={
+                    watchedValues.jobExperiences?.[index]?.companyName || ""
+                  }
+                  isReadOnly={!isEdit}
+                  isLoading={isLoading}
+                  error={errors.jobExperiences?.[index]?.companyName}
+                  isInvalid={
+                    !isValid && !!errors.jobExperiences?.[index]?.companyName
+                  }
                   {...register(`jobExperiences.${index}.companyName`, {
                     required: "Company name is required",
+                    onChange: () =>
+                      trigger(`jobExperiences.${index}.companyName`),
                   })}
                 />
 
-                <div className="flex gap-4">
-                  <Input
+                <div className="flex gap-x-4">
+                  <FormInput
                     type="date"
                     label="Start Date"
-                    value={watchedValues.jobExperiences?.[index]?.startDate || ""}
-                    isDisabled={!isEdit}
-                    isInvalid={!!errors.jobExperiences?.[index]?.startDate}
-                    errorMessage={errors.jobExperiences?.[index]?.startDate?.message || "Start date is required"}
+                    value={
+                      watchedValues.jobExperiences?.[index]?.startDate || ""
+                    }
+                    isReadOnly={!isEdit}
+                    isLoading={isLoading}
+                    error={errors.jobExperiences?.[index]?.startDate}
+                    isInvalid={
+                      !isValid && !!errors.jobExperiences?.[index]?.startDate
+                    }
                     {...register(`jobExperiences.${index}.startDate`, {
                       required: "Start date is required",
+                      onChange: () =>
+                        trigger(`jobExperiences.${index}.startDate`),
                     })}
                   />
 
-                  <Input
+                  <FormInput
                     type="date"
                     label="End Date"
                     value={watchedValues.jobExperiences?.[index]?.endDate || ""}
-                    isDisabled={!isEdit || watchedValues.jobExperiences?.[index]?.isPresentJob}
-                    isInvalid={!watchedValues.jobExperiences?.[index]?.isPresentJob && !!errors.jobExperiences?.[index]?.endDate}
-                    errorMessage={!watchedValues.jobExperiences?.[index]?.isPresentJob ? errors.jobExperiences?.[index]?.endDate?.message : ""}
+                    isDisabled={
+                      watchedValues.jobExperiences?.[index]?.isPresentJob ||
+                      !isEdit
+                    }
+                    isLoading={isLoading}
+                    isInvalid={
+                      !isValid &&
+                      !!errors.jobExperiences?.[index]?.endDate &&
+                      !watchedValues.jobExperiences?.[index]?.isPresentJob
+                    }
+                    error={
+                      !watchedValues.jobExperiences?.[index]?.isPresentJob
+                        ? errors.jobExperiences?.[index]?.endDate
+                        : undefined
+                    }
                     {...register(`jobExperiences.${index}.endDate`, {
-                      required: !watchedValues.jobExperiences?.[index]?.isPresentJob ? "End date is required" : false,
+                      required: !watchedValues.jobExperiences?.[index]
+                        ?.isPresentJob
+                        ? "End date is required"
+                        : false,
+                      onChange: () =>
+                        trigger(`jobExperiences.${index}.endDate`),
                     })}
                   />
                 </div>
 
                 <Checkbox
-                  isSelected={watchedValues.jobExperiences?.[index]?.isPresentJob || false}
+                  className="mb-3"
+                  size="sm"
+                  isSelected={
+                    watchedValues.jobExperiences?.[index]?.isPresentJob || false
+                  }
                   isDisabled={!isEdit}
                   onValueChange={(checked) => {
-                    setValue(`jobExperiences.${index}.isPresentJob`, checked, { shouldValidate: true });
+                    setValue(`jobExperiences.${index}.isPresentJob`, checked, {
+                      shouldValidate: true,
+                    });
                     if (checked) {
-                      setValue(`jobExperiences.${index}.endDate`, "", { shouldValidate: true });
+                      setValue(`jobExperiences.${index}.endDate`, "", {
+                        shouldValidate: true,
+                      });
                     }
                   }}
+                  radius="none"
                 >
                   This is my current job
                 </Checkbox>
 
                 <Textarea
                   label="Job Description"
+                  labelPlacement="outside"
+                  araia-label="Job Description"
                   placeholder="Describe your responsibilities and achievements"
-                  value={watchedValues.jobExperiences?.[index]?.description || ""}
+                  value={
+                    watchedValues.jobExperiences?.[index]?.description || ""
+                  }
                   isDisabled={!isEdit}
-                  isInvalid={!!errors.jobExperiences?.[index]?.description}
-                  errorMessage={errors.jobExperiences?.[index]?.description?.message || "Job description is required"}
                   minRows={3}
+                  radius="none"
+                  isInvalid={
+                    !isValid &&
+                    !!errors.jobExperiences?.[index]?.description?.message
+                  }
+                  errorMessage={
+                    errors.jobExperiences?.[index]?.description?.message
+                  }
                   {...register(`jobExperiences.${index}.description`, {
                     required: "Job description is required",
-                    minLength: { value: 10, message: "Description must be at least 10 characters" }
+                    minLength: {
+                      value: 10,
+                      message: "Description must be at least 10 characters",
+                    },
+                    onChange: () =>
+                      trigger(`jobExperiences.${index}.description`),
                   })}
                 />
-              </CardBody>
-            </Card>
+              </div>
+            </div>
           ))}
-        </CardBody>
-      </Card>
+        </div>
+      </div>
     </div>
   );
 });
