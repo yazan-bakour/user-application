@@ -5,7 +5,7 @@ import FormSelect from "../../components/FormSelect";
 import { SelectItem, Textarea } from "@heroui/react";
 import { useFormContext } from "react-hook-form";
 import { memo } from "react";
-import { FormData, WorkType } from "./service";
+import { FormData, WorkType } from "./types";
 import Projects from "./Projects";
 import References from "./References";
 

@@ -4,7 +4,7 @@ import FormInput from "../../components/FormInput";
 import { Button, Textarea, Checkbox } from "@heroui/react";
 import { useFormContext, useFieldArray } from "react-hook-form";
 import { memo } from "react";
-import { FormData, Project } from "./service";
+import { FormData, Project } from "./types";
 
 interface ProjectsProps {
   isEdit: boolean;

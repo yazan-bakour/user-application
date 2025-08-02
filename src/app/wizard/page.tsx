@@ -3,7 +3,8 @@
 import { Button, Form } from "@heroui/react";
 import { useForm, FormProvider } from "react-hook-form";
 import { useState } from "react";
-import { FormData, fetchFormData, submitFormData } from "./service";
+import { FormData } from "./types";
+import { fetchFormData, submitFormData } from "./service";
 import Info from "./Info";
 import Career from "./Career";
 import Profile from "./Profile";
@@ -172,9 +173,7 @@ export default function WizardPage() {
 
           <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 p-4 shadow-lg z-50">
             <div className="max-w-5xl mx-auto flex justify-between item-center gap-6 pl-6">
-              <h4 className="text-sm text-gray-500 mb-2 flex">
-                Press on Edit to change form values and then save or submit
-              </h4>
+              <h4 className="text-sm text-gray-500 mb-2 flex">Press on Edit</h4>
               <div className="flex flex-row gap-4">
                 {!isEdit && (
                   <div className="flex gap-2">

@@ -5,7 +5,7 @@ import FormSelect from "../../components/FormSelect";
 import { SelectItem, Button, Textarea, Checkbox } from "@heroui/react";
 import { useFormContext, useFieldArray } from "react-hook-form";
 import { memo } from "react";
-import { FormData, DegreeType, JobExperience, Education } from "./service";
+import { FormData, DegreeType, JobExperience, Education } from "./types";
 
 interface CareerProps {
   isEdit: boolean;

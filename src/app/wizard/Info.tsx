@@ -3,7 +3,7 @@
 import { SelectItem, RadioGroup, Radio } from "@heroui/react";
 import { useFormContext } from "react-hook-form";
 import { memo } from "react";
-import { FormData, Title, MaritalStatus } from "./service";
+import { FormData, Title, MaritalStatus } from "./types";
 import FormInput from "../../components/FormInput";
 import FormSelect from "../../components/FormSelect";
 
