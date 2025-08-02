@@ -171,7 +171,7 @@ export default function WizardPage() {
             {renderCurrentStep()}
           </Form>
 
-          <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 p-4 shadow-lg z-50">
+          <div className="fixed bottom-0 left-0 right-0 bg-background border-t border-gray-200 p-4 shadow-lg z-50">
             <div className="max-w-5xl mx-auto flex justify-between item-center gap-6 pl-6">
               <h4 className="text-sm text-gray-500 mb-2 flex">Press on Edit</h4>
               <div className="flex flex-row gap-4">

@@ -12,7 +12,6 @@ export const fetchFormData = async (): Promise<FormData> => {
 export const submitFormData = async (data: FormData): Promise<{ success: boolean; message: string }> => {
   await new Promise(resolve => setTimeout(resolve, 800));
   
-  // Log the submitted data for debugging
   console.log("Submitting form data:", data);
   
   return new Promise((resolve) => {
