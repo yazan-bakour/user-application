@@ -11,7 +11,7 @@ export default function Home() {
         <p className="text-lg text-gray-600 max-w-md">
           Get started with our wizard to set up your profile and preferences.
         </p>
-        <Link href="/wizard">
+        <Link href="/forms">
           <Button size="lg" color="primary" variant="flat" radius="none">
             Go to Wizard
           </Button>

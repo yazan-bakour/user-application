@@ -4,7 +4,7 @@ import FormInput from "../../components/FormInput";
 import { Button, Checkbox } from "@heroui/react";
 import { useFormContext, useFieldArray } from "react-hook-form";
 import { memo } from "react";
-import { FormData, Certification as CertificationType } from "./types";
+import { FormData, Certification as CertificationType } from "../types";
 
 interface CertificationProps {
   isEdit: boolean;

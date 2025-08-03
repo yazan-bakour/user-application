@@ -5,12 +5,20 @@ import {
   NavbarBrand,
   NavbarContent,
   NavbarItem,
+  NavbarMenu,
+  NavbarMenuItem,
+  NavbarMenuToggle,
   Switch,
+  Button,
 } from "@heroui/react";
+import Link from "next/link";
 import { useState, useEffect } from "react";
+import { usePathname } from "next/navigation";
 
 export function Header() {
   const [isDarkMode, setIsDarkMode] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const pathname = usePathname();
 
   // Check for saved theme preference or default to light mode
   useEffect(() => {
@@ -45,11 +53,45 @@ export function Header() {
     }
   };
 
+  const menuItems = [
+    { name: "Home", href: "/" },
+    { name: "Wizard", href: "/wizard" },
+    { name: "Forms List", href: "/forms" },
+  ];
+
   return (
-    <Navbar className="bg-background shadow-sm border-b border-divider">
-      <NavbarBrand>
-        <p className="font-bold text-foreground">React Hook Form & HeroUi</p>
-      </NavbarBrand>
+    <Navbar
+      className="bg-background shadow-sm border-b border-divider"
+      onMenuOpenChange={setIsMenuOpen}
+    >
+      <NavbarContent>
+        <NavbarMenuToggle
+          aria-label={isMenuOpen ? "Close menu" : "Open menu"}
+          className="sm:hidden"
+        />
+        <NavbarBrand>
+          <Link href="/" className="font-bold italic text-primary-700">
+            FORMeNGINE
+          </Link>
+        </NavbarBrand>
+      </NavbarContent>
+
+      <NavbarContent className="hidden sm:flex gap-4" justify="center">
+        {menuItems.map((item) => (
+          <NavbarItem key={item.href}>
+            <Link href={item.href}>
+              <Button
+                variant={pathname === item.href ? "flat" : "light"}
+                color={pathname === item.href ? "primary" : "default"}
+                size="sm"
+              >
+                {item.name}
+              </Button>
+            </Link>
+          </NavbarItem>
+        ))}
+      </NavbarContent>
+
       <NavbarContent justify="end">
         <NavbarItem className="flex items-center gap-2">
           <span className="text-sm text-foreground">☀️</span>
@@ -62,6 +104,24 @@ export function Header() {
           <span className="text-sm text-foreground">🌙</span>
         </NavbarItem>
       </NavbarContent>
+
+      <NavbarMenu>
+        {menuItems.map((item) => (
+          <NavbarMenuItem key={item.href}>
+            <Link
+              href={item.href}
+              className={`w-full ${
+                pathname === item.href
+                  ? "text-primary font-semibold"
+                  : "text-foreground"
+              }`}
+              onClick={() => setIsMenuOpen(false)}
+            >
+              {item.name}
+            </Link>
+          </NavbarMenuItem>
+        ))}
+      </NavbarMenu>
     </Navbar>
   );
 }

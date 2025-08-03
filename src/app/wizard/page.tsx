@@ -3,7 +3,7 @@
 import { Button, Form } from "@heroui/react";
 import { useForm, FormProvider } from "react-hook-form";
 import { useState } from "react";
-import { FormData } from "./types";
+import { FormData } from "../types";
 import { fetchFormData, submitFormData } from "./service";
 import Info from "./Info";
 import Career from "./Career";
@@ -89,12 +89,9 @@ export default function WizardPage() {
   };
 
   const handleNext = async () => {
-    if (isEdit) {
-      triggerValidation();
-    } else {
-      if (currentStep < totalSteps - 1) {
-        setCurrentStep(currentStep + 1);
-      }
+    // Always allow navigation to next step regardless of edit mode
+    if (currentStep < totalSteps - 1) {
+      setCurrentStep(currentStep + 1);
     }
   };
 
@@ -152,14 +149,19 @@ export default function WizardPage() {
 
         <main>
           <div className="flex justify-between w-full mb-6">
-            <div className="w-full">
+            <div>
               <h1 className="text-4xl font-bold mb-2 text-primary-800">
                 User Information Wizard
               </h1>
+              <p className="text-primary-500 mb-4">
+                Press on Edit button to modify the form data.
+              </p>
+              <p className="text-xl font-bold">{stepNames[currentStep]}</p>
+            </div>
+            <div className="hidden md:block">
               <p className="text-primary-900 mb-10">
                 Step {currentStep + 1} of {totalSteps}
               </p>
-              <p className="text-xl font-bold">{stepNames[currentStep]}</p>
             </div>
           </div>
 
@@ -172,34 +174,36 @@ export default function WizardPage() {
           </Form>
 
           <div className="fixed bottom-0 left-0 right-0 bg-background border-t border-gray-200 p-4 shadow-lg z-50">
-            <div className="max-w-5xl mx-auto flex justify-between item-center gap-6 pl-6">
-              <h4 className="text-sm text-gray-500 mb-2 flex">Press on Edit</h4>
+            <div className="max-w-5xl mx-auto flex justify-between items-center gap-6">
+              <div className="flex items-center justify-center">
+                <p className="text-primary-900 mb-10 text-xs">
+                  Step {currentStep + 1} of {totalSteps}
+                </p>
+              </div>
               <div className="flex flex-row gap-4">
-                {!isEdit && (
-                  <div className="flex gap-2">
-                    {currentStep > 0 && (
-                      <Button
-                        radius="none"
-                        onPress={handleBack}
-                        variant="bordered"
-                      >
-                        Back
-                      </Button>
-                    )}
+                <div className="flex gap-2">
+                  {currentStep > 0 && (
+                    <Button
+                      radius="none"
+                      onPress={handleBack}
+                      variant="bordered"
+                    >
+                      Back
+                    </Button>
+                  )}
 
-                    {currentStep < totalSteps - 1 ? (
-                      <Button
-                        variant="flat"
-                        radius="none"
-                        onPress={handleNext}
-                        color="primary"
-                        disabled={isLoading}
-                      >
-                        Next
-                      </Button>
-                    ) : null}
-                  </div>
-                )}
+                  {currentStep < totalSteps - 1 && (
+                    <Button
+                      variant="flat"
+                      radius="none"
+                      onPress={handleNext}
+                      color="primary"
+                      disabled={isLoading}
+                    >
+                      Next
+                    </Button>
+                  )}
+                </div>
                 <div className="flex gap-2">
                   {!isEdit ? (
                     <Button

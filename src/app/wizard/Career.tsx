@@ -3,9 +3,9 @@
 import FormInput from "../../components/FormInput";
 import FormSelect from "../../components/FormSelect";
 import { SelectItem, Button, Textarea, Checkbox } from "@heroui/react";
-import { useFormContext, useFieldArray } from "react-hook-form";
+import { useFormContext } from "react-hook-form";
 import { memo } from "react";
-import { FormData, DegreeType, JobExperience, Education } from "./types";
+import { FormData, DegreeType, JobExperience, Education } from "../types";
 
 interface CareerProps {
   isEdit: boolean;
@@ -17,29 +17,14 @@ const Career = memo(({ isEdit }: CareerProps) => {
     formState: { errors, isLoading, isValid },
     watch,
     setValue,
-    control,
     trigger,
   } = useFormContext<FormData>();
 
-  const {
-    fields: educationFields,
-    append: appendEducation,
-    remove: removeEducation,
-  } = useFieldArray({
-    control,
-    name: "educations",
-  });
-
-  const {
-    fields: experienceFields,
-    append: appendExperience,
-    remove: removeExperience,
-  } = useFieldArray({
-    control,
-    name: "jobExperiences",
-  });
-
   const watchedValues = watch();
+
+  // Get educations and jobExperiences directly from watchedValues
+  const educations = watchedValues.educations || [];
+  const jobExperiences = watchedValues.jobExperiences || [];
 
   const addNewEducation = () => {
     const newEducation: Education = {
@@ -48,12 +33,14 @@ const Career = memo(({ isEdit }: CareerProps) => {
       degreeType: "",
       courseName: "",
     };
-    appendEducation(newEducation);
+    const updatedEducations = [...educations, newEducation];
+    setValue("educations", updatedEducations, { shouldValidate: true });
   };
 
   const removeEducationEntry = (index: number) => {
-    if (educationFields.length > 1 && index > 0) {
-      removeEducation(index);
+    if (educations.length > 1 && index > 0) {
+      const updatedEducations = educations.filter((_, i) => i !== index);
+      setValue("educations", updatedEducations, { shouldValidate: true });
     }
   };
 
@@ -67,15 +54,19 @@ const Career = memo(({ isEdit }: CareerProps) => {
       isPresentJob: false,
       description: "",
     };
-    appendExperience(newExperience);
+    const updatedExperiences = [...jobExperiences, newExperience];
+    setValue("jobExperiences", updatedExperiences, { shouldValidate: true });
   };
 
   const removeExperienceEntry = (index: number) => {
-    if (experienceFields.length > 1 && index > 0) {
-      removeExperience(index);
+    if (jobExperiences.length > 1 && index > 0) {
+      const updatedExperiences = jobExperiences.filter((_, i) => i !== index);
+      setValue("jobExperiences", updatedExperiences, { shouldValidate: true });
     }
   };
 
+  console.log("educations from watchedValues:", educations);
+  console.log("jobExperiences from watchedValues:", jobExperiences);
   return (
     <div className="gap-8 w-full grid grid-cols-1 md:grid-cols-2">
       <div>
@@ -94,15 +85,15 @@ const Career = memo(({ isEdit }: CareerProps) => {
           )}
         </div>
         <div className="flex flex-col gap-6">
-          {educationFields.map((field, index) => (
-            <div key={field.id} className="border-none">
+          {educations.map((education: Education, index: number) => (
+            <div key={education.id || index} className="border-none">
               <div className="flex justify-between items-center mb-4">
                 {index > 0 && (
                   <h4 className="text-md font-medium">
                     Education #{index + 1}
                   </h4>
                 )}
-                {isEdit && educationFields.length > 1 && index > 0 && (
+                {isEdit && educations.length > 1 && index > 0 && (
                   <Button
                     color="danger"
                     variant="light"
@@ -200,15 +191,15 @@ const Career = memo(({ isEdit }: CareerProps) => {
           )}
         </div>
         <div className="flex flex-col gap-4">
-          {experienceFields.map((field, index) => (
-            <div key={field.id} className="border-none">
+          {jobExperiences.map((experience: JobExperience, index: number) => (
+            <div key={experience.id || index} className="border-none">
               <div className="flex justify-between items-center mb-4">
                 {index > 0 && (
                   <h4 className="text-md font-medium">
                     Experience #{index + 1}
                   </h4>
                 )}
-                {isEdit && experienceFields.length > 1 && index > 0 && (
+                {isEdit && jobExperiences.length > 1 && index > 0 && (
                   <Button
                     color="danger"
                     variant="light"

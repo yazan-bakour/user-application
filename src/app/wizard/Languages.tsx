@@ -5,7 +5,7 @@ import FormSelect from "../../components/FormSelect";
 import { SelectItem, Button } from "@heroui/react";
 import { useFormContext, useFieldArray } from "react-hook-form";
 import { memo } from "react";
-import { FormData, ProficiencyLevel, Language } from "./types";
+import { FormData, ProficiencyLevel, Language } from "../types";
 
 interface LanguagesProps {
   isEdit: boolean;

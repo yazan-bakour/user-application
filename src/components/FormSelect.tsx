@@ -60,8 +60,8 @@ const FormSelect = forwardRef<HTMLSelectElement, FormSelectProps>(
 
     if (isLoading) {
       return (
-        <Skeleton className="rounded-none">
-          <div className="h-14 w-full bg-default-200"></div>
+        <Skeleton className="rounded-none mb-6">
+          <div className="h-10 py-4 w-full bg-default-200"></div>
         </Skeleton>
       );
     }

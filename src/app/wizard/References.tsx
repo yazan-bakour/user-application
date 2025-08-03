@@ -4,7 +4,7 @@ import FormInput from "../../components/FormInput";
 import { Button } from "@heroui/react";
 import { useFormContext, useFieldArray } from "react-hook-form";
 import { memo } from "react";
-import { FormData, Reference } from "./types";
+import { FormData, Reference } from "../types";
 
 interface ReferencesProps {
   isEdit: boolean;

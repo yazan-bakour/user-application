@@ -2,7 +2,7 @@
 
 import { useFormContext } from "react-hook-form";
 import { memo } from "react";
-import { FormData } from "./types";
+import { FormData } from "../types";
 import Certification from "./Certification";
 import Languages from "./Languages";
 import Skills from "./Skills";
