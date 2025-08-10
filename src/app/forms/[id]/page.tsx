@@ -1,6 +1,6 @@
 "use client";
 
-import { Chip, Divider } from "@heroui/react";
+import { Divider } from "@heroui/react";
 import { useState, useEffect } from "react";
 import { useParams } from "next/navigation";
 import { APIFormData } from "../../types";
@@ -9,62 +9,34 @@ import LoadingSkeleton from "../../../components/LoadingSkeleton";
 import ErrorPage from "@/components/ErrorPage";
 import { EmptyPage } from "@/components/EmptyPage";
 import BottomNavigation from "../../../components/BottomNavigation";
-
-interface FormResponse {
-  success: boolean;
-  data: APIFormData;
-  timestamp: string;
-}
-
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
-
-if (!API_BASE_URL) {
-  throw new Error("NEXT_PUBLIC_API_BASE_URL environment variable is not set");
-}
+import { useFormData } from "../../../hooks/useFormData";
 
 export default function ViewFormPage() {
   const [formData, setFormData] = useState<APIFormData | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [refreshCount, setRefreshCount] = useState(0);
   const params = useParams();
   const formId = params.id as string;
 
+  const { fetchFormData, isLoading, error } = useFormData();
+
   useEffect(() => {
-    const fetchFormData = async () => {
-      try {
-        setIsLoading(true);
-        const response = await fetch(
-          `${API_BASE_URL}/api/v1/form-data/${formId}`
-        );
-
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-
-        const result: FormResponse = await response.json();
-
-        if (result.success) {
-          setFormData(result.data);
-          setError(null);
-        } else {
-          setError("Failed to fetch form data");
-        }
-      } catch (err) {
-        console.error("Error fetching form data:", err);
-        setError(err instanceof Error ? err.message : "An error occurred");
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
     if (formId) {
-      fetchFormData();
+      const loadData = async () => {
+        const data = await fetchFormData(formId);
+        if (data) {
+          setFormData(data);
+        }
+      };
+      loadData();
     }
-  }, [formId, refreshCount]);
+  }, [formId, fetchFormData]);
 
-  const handleRetry = () => {
-    setRefreshCount((prev) => prev + 1);
+  const handleRetry = async () => {
+    if (formId) {
+      const data = await fetchFormData(formId);
+      if (data) {
+        setFormData(data);
+      }
+    }
   };
 
   const formatDate = (dateString: string) => {
@@ -75,29 +47,12 @@ export default function ViewFormPage() {
     });
   };
 
-  const getWorkTypeColor = (workType: string | null) => {
-    switch (workType) {
-      case "Remote":
-        return "success";
-      case "Onsite":
-        return "warning";
-      case "Hybrid":
-        return "primary";
-      default:
-        return "default";
-    }
-  };
-
-  if (isLoading) {
+  if (!formData || isLoading) {
     return <LoadingSkeleton variant="form" />;
   }
 
   if (error) {
     return <ErrorPage error={error} reset={handleRetry} />;
-  }
-
-  if (!formData) {
-    return <EmptyPage />;
   }
 
   return (
@@ -161,6 +116,10 @@ export default function ViewFormPage() {
               value: formData.expected_salary,
             },
             {
+              label: "Preferred Work Type",
+              value: formData.preferred_work_type,
+            },
+            {
               label: "Created",
               value: formData.created_at,
               type: "date",
@@ -171,21 +130,7 @@ export default function ViewFormPage() {
               type: "date",
             },
           ]}
-        >
-          <div className="space-y-4">
-            <div>
-              <p className="text-sm text-default-500">Preferred Work Type</p>
-              <Chip
-                color={getWorkTypeColor(formData.preferred_work_type)}
-                variant="flat"
-                radius="none"
-                className="mt-1"
-              >
-                {formData.preferred_work_type || "Not specified"}
-              </Chip>
-            </div>
-          </div>
-        </InfoCard>
+        />
 
         {/* Education */}
         <InfoCard

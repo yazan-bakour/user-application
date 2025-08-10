@@ -5,39 +5,24 @@ import { useForm, FormProvider } from "react-hook-form";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { FormData } from "../../types";
-import { submitFormData } from "../service";
 import { formData as defaultFormData } from "../../../constants";
 import LoadingSkeleton from "../../../components/LoadingSkeleton";
 import BottomNavigation from "../../../components/BottomNavigation";
+import { useFormErrors } from "../../../hooks/useFormErrors";
+import { useFormSubmission } from "../../../hooks/useFormSubmission";
+import { useFormUpdate } from "../../../hooks/useFormUpdate";
+import { useFormData } from "../../../hooks/useFormData";
 import Info from "../Info";
 import Career from "../Career";
 import Profile from "../Profile";
 import Portfolio from "../Portfolio";
 import ErrorPage from "@/components/ErrorPage";
 
-interface APIValidationError {
-  type: string;
-  loc: (string | number)[];
-  msg: string;
-  input: unknown;
-  ctx?: Record<string, unknown>;
-}
-
-interface APIErrorResponse {
-  detail: APIValidationError[];
-}
-
 interface WizardLayoutProps {
   mode: "create" | "edit";
   formId?: string;
   initialData?: FormData;
   onDataLoaded?: (data: FormData) => void;
-}
-
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
-
-if (!API_BASE_URL) {
-  throw new Error("NEXT_PUBLIC_API_BASE_URL environment variable is not set");
 }
 
 export default function WizardLayout({
@@ -47,9 +32,9 @@ export default function WizardLayout({
   onDataLoaded,
 }: WizardLayoutProps) {
   const [currentStep, setCurrentStep] = useState(0);
-  const [isLoading, setIsLoading] = useState(mode === "edit");
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
+  const { displayFormErrors } = useFormErrors();
 
   const methods = useForm<FormData>({
     defaultValues: mode === "create" ? defaultFormData : undefined,
@@ -64,6 +49,14 @@ export default function WizardLayout({
     watch,
   } = methods;
 
+  const { handleCreateForm } = useFormSubmission({ setFormError });
+  const { handleUpdateForm } = useFormUpdate({ formId });
+  const {
+    fetchFormData,
+    isLoading: isDataLoading,
+    error: dataError,
+  } = useFormData();
+
   const watchedData = watch();
   const totalSteps = 4;
   const stepNames = [
@@ -75,190 +68,46 @@ export default function WizardLayout({
 
   useEffect(() => {
     if (mode === "edit" && formId) {
-      const fetchFormData = async () => {
-        try {
-          setIsLoading(true);
-          const response = await fetch(
-            `${API_BASE_URL}/api/v1/form-data/${formId}`,
-            {
-              method: "GET",
-              headers: {
-                "Content-Type": "application/json",
-              },
-            }
-          );
-
-          if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-          }
-
-          const result = await response.json();
-
-          if (result.success) {
-            reset(result.data);
-            onDataLoaded?.(result.data);
-            setError(null);
-          } else {
-            setError("Failed to fetch form data");
-          }
-        } catch (err) {
-          console.error("Error fetching form data:", err);
-          setError(err instanceof Error ? err.message : "An error occurred");
-        } finally {
-          setIsLoading(false);
+      const loadFormData = async () => {
+        const data = await fetchFormData(formId);
+        if (data) {
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+          const { id, created_at, updated_at, ...formData } = data;
+          reset(formData);
+          onDataLoaded?.(formData);
+          setError(null);
         }
       };
 
-      fetchFormData();
+      loadFormData();
     } else if (mode === "create" && initialData) {
       reset(initialData);
       onDataLoaded?.(initialData);
     }
-  }, [mode, formId, initialData, reset, onDataLoaded]);
+  }, [mode, formId, initialData, reset, onDataLoaded, fetchFormData]);
 
-  const displayFormErrors = (apiErrors?: APIErrorResponse) => {
-    let errorMessages: string[] = [];
-
-    if (apiErrors && apiErrors.detail && Array.isArray(apiErrors.detail)) {
-      errorMessages = apiErrors.detail.map((error: APIValidationError) => {
-        const fieldPath = error.loc
-          ? error.loc.slice(1).join(".")
-          : "unknown field";
-        const fieldName = fieldPath
-          .split(".")
-          .map((part: string) => part.charAt(0).toUpperCase() + part.slice(1))
-          .join(" ");
-        return `${fieldName}: ${error.msg || "Invalid input"}`;
-      });
-    } else {
-      errorMessages = Object.entries(errors).map(([field, error]) => {
-        const fieldName =
-          field.charAt(0).toUpperCase() +
-          field.slice(1).replace(/([A-Z])/g, " $1");
-        return `${fieldName}: ${error?.message || "Invalid input"}`;
-      });
+  useEffect(() => {
+    if (dataError) {
+      setError(dataError);
     }
-
-    if (errorMessages.length > 0) {
-      addToast({
-        title: "Please fix the following errors:",
-        description:
-          errorMessages.slice(0, 3).join("; ") +
-          (errorMessages.length > 3 ? "..." : ""),
-        color: "danger",
-      });
-    }
-  };
+  }, [dataError]);
 
   const onSubmit = async (data: FormData) => {
     try {
       if (mode === "create") {
-        const result = await submitFormData(data);
-
-        if (result.success) {
-          if (result.data && result.data.id) {
-            router.push(`/forms/${result.data.id}`);
-          } else {
-            router.push("/forms");
-          }
-          addToast({
-            title: result.message || "Form submitted successfully!",
-            color: "success",
-          });
-        } else {
-          if (result.errors) {
-            if (
-              "detail" in result.errors &&
-              Array.isArray(result.errors.detail)
-            ) {
-              result.errors.detail.forEach((error) => {
-                if (
-                  typeof error === "object" &&
-                  error !== null &&
-                  "loc" in error &&
-                  "msg" in error
-                ) {
-                  if (error.loc && error.loc.length > 1) {
-                    const fieldPath = error.loc.slice(1).join(".");
-                    setFormError(fieldPath as keyof FormData, {
-                      type: "server",
-                      message: error.msg,
-                    });
-                  }
-                }
-              });
-              displayFormErrors(result.errors as APIErrorResponse);
-            } else {
-              Object.entries(result.errors).forEach(([field, message]) => {
-                setFormError(field as keyof FormData, {
-                  type: "server",
-                  message: Array.isArray(message)
-                    ? message[0]
-                    : (message as string),
-                });
-              });
-              addToast({
-                title: "Please fix the validation errors and try again.",
-                color: "danger",
-              });
-            }
-          } else {
-            addToast({
-              title: result.message || "Form submission failed!",
-              color: "danger",
-            });
-          }
-        }
+        await handleCreateForm(data);
       } else {
-        const response = await fetch(
-          `${API_BASE_URL}/api/v1/form-data/${formId}`,
-          {
-            method: "PUT",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify(data),
-          }
-        );
-
-        const result = await response.json();
-
-        if (!response.ok) {
-          console.error("Backend validation errors:", result);
-
-          if (result.detail && Array.isArray(result.detail)) {
-            const errorMessages = result.detail
-              .map((error: { msg: string }) => error.msg)
-              .join("; ");
-            addToast({
-              title: "Validation failed",
-              description: errorMessages,
-              color: "danger",
-            });
-          } else {
-            addToast({
-              title: "Update failed",
-              description:
-                result.message || `HTTP error! status: ${response.status}`,
-              color: "danger",
-            });
-          }
-          return;
-        }
-
-        addToast({
-          title: "Success!",
-          description: result.message || "Form updated successfully!",
-          color: "success",
-        });
-
-        router.push(`/forms/${formId}`);
+        await handleUpdateForm(data);
       }
     } catch (error) {
       console.error("Form submission failed:", error);
       const errorMessage =
         error instanceof Error ? error.message : "Form submission failed!";
-      addToast({ title: errorMessage, color: "danger" });
+      addToast({
+        title: "Submission Error",
+        description: errorMessage,
+        color: "danger",
+      });
     }
   };
 
@@ -270,7 +119,7 @@ export default function WizardLayout({
         setCurrentStep(currentStep + 1);
       }, 150);
     } else if (!isStepValid) {
-      displayFormErrors();
+      displayFormErrors(undefined, errors);
     }
   };
 
@@ -300,7 +149,7 @@ export default function WizardLayout({
     }
   };
 
-  if (isLoading) {
+  if (isDataLoading) {
     return <LoadingSkeleton variant="wizard" rows={5} />;
   }
 

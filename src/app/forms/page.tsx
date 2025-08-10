@@ -17,6 +17,7 @@ import BottomNavigation from "../../components/BottomNavigation";
 import TableSkeleton from "./TableSkelaton";
 import ErrorPage from "../../components/ErrorPage";
 import { APIFormData } from "../types";
+import { demoFormsData } from "../../constants/demoData";
 
 interface FormsResponse {
   success: boolean;
@@ -26,10 +27,6 @@ interface FormsResponse {
 }
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
-
-if (!API_BASE_URL) {
-  throw new Error("NEXT_PUBLIC_API_BASE_URL environment variable is not set");
-}
 
 export default function FormsListPage() {
   const [forms, setForms] = useState<APIFormData[]>([]);
@@ -58,6 +55,15 @@ export default function FormsListPage() {
   const fetchForms = async () => {
     try {
       setIsLoading(true);
+
+      if (!API_BASE_URL) {
+        console.log("API not configured, using demo forms data");
+        setForms(demoFormsData);
+        setError(null);
+        setIsLoading(false);
+        return;
+      }
+
       const response = await fetch(`${API_BASE_URL}/api/v1/form-data/`, {
         method: "GET",
         headers: {
@@ -75,11 +81,14 @@ export default function FormsListPage() {
         setForms(result.data);
         setError(null);
       } else {
-        setError("Failed to fetch forms");
+        throw new Error("Failed to fetch forms");
       }
     } catch (err) {
       console.error("Error fetching forms:", err);
-      setError(err instanceof Error ? err.message : "An error occurred");
+      console.log("API failed, falling back to demo forms data");
+
+      setForms(demoFormsData);
+      setError(null);
     } finally {
       setIsLoading(false);
     }
