@@ -42,7 +42,7 @@ const Languages = memo(({ isEdit }: LanguagesProps) => {
   };
 
   const removeLanguageEntry = (index: number) => {
-    if (languageFields.length > 1 && index > 0) {
+    if (languageFields.length > 1) {
       removeLanguage(index);
     }
   };
@@ -68,10 +68,10 @@ const Languages = memo(({ isEdit }: LanguagesProps) => {
           <div key={field.id} className="border-none">
             <div className="flex flex-col gap-4">
               <div className="flex justify-between items-center">
-                {index > 0 && (
+                {languageFields.length > 1 && (
                   <h5 className="text-sm font-medium">Language #{index + 1}</h5>
                 )}
-                {isEdit && languageFields.length > 1 && index > 0 && (
+                {isEdit && languageFields.length > 1 && (
                   <Button
                     color="danger"
                     variant="light"
@@ -83,7 +83,7 @@ const Languages = memo(({ isEdit }: LanguagesProps) => {
                   </Button>
                 )}
               </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-x-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 md:gap-4">
                 <FormInput
                   type="text"
                   label="Language"

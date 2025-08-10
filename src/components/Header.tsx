@@ -63,6 +63,7 @@ export function Header() {
     <Navbar
       className="bg-background shadow-sm border-b border-divider"
       onMenuOpenChange={setIsMenuOpen}
+      isMenuOpen={isMenuOpen}
     >
       <NavbarContent>
         <NavbarMenuToggle
@@ -81,9 +82,20 @@ export function Header() {
           <NavbarItem key={item.href}>
             <Link href={item.href}>
               <Button
-                variant={pathname === item.href ? "flat" : "light"}
-                color={pathname === item.href ? "primary" : "default"}
+                variant={
+                  pathname === item.href ||
+                  (item.href === "/wizard" && pathname.startsWith("/wizard"))
+                    ? "flat"
+                    : "light"
+                }
+                color={
+                  pathname === item.href ||
+                  (item.href === "/wizard" && pathname.startsWith("/wizard"))
+                    ? "primary"
+                    : "default"
+                }
                 size="sm"
+                radius="none"
               >
                 {item.name}
               </Button>
@@ -110,8 +122,9 @@ export function Header() {
           <NavbarMenuItem key={item.href}>
             <Link
               href={item.href}
-              className={`w-full ${
-                pathname === item.href
+              className={`w-full block ${
+                pathname === item.href ||
+                (item.href === "/wizard" && pathname.startsWith("/wizard"))
                   ? "text-primary font-semibold"
                   : "text-foreground"
               }`}

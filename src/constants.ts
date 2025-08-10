@@ -1,36 +1,36 @@
-import { FormData } from "../types";
+import { FormData } from "./app/types";
 
 export const formData: FormData = {
-  firstName: "",
-  lastName: "",
+  first_name: "",
+  last_name: "",
   email: "",
-  mobileNumber: "",
-  dateOfBirth: "",
-  streetAddress: "",
+  mobile_number: "",
+  date_of_birth: "",
+  street_address: "",
   city: "",
   state: "",
-  postalCode: "",
+  postal_code: "",
   country: "",
   title: null,
-  maritalStatus: "",
+  marital_status: "",
   developer: "",
   job: "",
   educations: [
     {
       id: "1",
-      universityName: "",
-      degreeType: "",
-      courseName: "",
+      university_name: "",
+      degree_type: "",
+      course_name: "",
     }
   ],
-  jobExperiences: [
+  job_experiences: [
     {
       id: "1",
-      jobTitle: "",
-      companyName: "",
-      startDate: "",
-      endDate: "",
-      isPresentJob: false,
+      job_title: "",
+      company_name: "",
+      start_date: "",
+      end_date: "",
+      is_present_job: false,
       description: "",
     }
   ],
@@ -48,9 +48,9 @@ export const formData: FormData = {
       id: "1",
       name: "",
       issuer: "",
-      dateObtained: "",
-      expiryDate: "",
-      hasExpiry: false,
+      date_obtained: "",
+      expiry_date: "",
+      has_expiry: false,
     }
   ],
   languages: [
@@ -68,14 +68,14 @@ export const formData: FormData = {
       description: "",
       technologies: "",
       link: "",
-      startDate: "",
-      endDate: "",
-      isOngoing: false,
+      start_date: "",
+      end_date: "",
+      is_ongoing: false,
     }
   ],
-  portfolioWebsite: "",
-  githubUrl: "",
-  linkedinUrl: "",
+  portfolio_website: "",
+  github_url: "",
+  linkedin_url: "",
   references: [
     {
       id: "1",
@@ -87,14 +87,14 @@ export const formData: FormData = {
     }
   ],
   // Preferences & Goals
-  preferredWorkType: "",
-  expectedSalary: "",
-  preferredLocation: "",
-  availabilityDate: "",
-  careerGoals: "",
+  preferred_work_type: "",
+  expected_salary: "",
+  preferred_location: "",
+  availability_date: "",
+  career_goals: "",
   // Additional Information
-  professionalSummary: "",
+  professional_summary: "",
   hobbies: "",
-  volunteerWork: "",
-  additionalNotes: "",
+  volunteer_work: "",
+  additional_notes: "",
 };

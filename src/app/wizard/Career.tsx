@@ -22,23 +22,22 @@ const Career = memo(({ isEdit }: CareerProps) => {
 
   const watchedValues = watch();
 
-  // Get educations and jobExperiences directly from watchedValues
   const educations = watchedValues.educations || [];
-  const jobExperiences = watchedValues.jobExperiences || [];
+  const job_experiences = watchedValues.job_experiences || [];
 
   const addNewEducation = () => {
     const newEducation: Education = {
       id: Date.now().toString(),
-      universityName: "",
-      degreeType: "",
-      courseName: "",
+      university_name: "",
+      degree_type: "",
+      course_name: "",
     };
     const updatedEducations = [...educations, newEducation];
     setValue("educations", updatedEducations, { shouldValidate: true });
   };
 
   const removeEducationEntry = (index: number) => {
-    if (educations.length > 1 && index > 0) {
+    if (educations.length > 1) {
       const updatedEducations = educations.filter((_, i) => i !== index);
       setValue("educations", updatedEducations, { shouldValidate: true });
     }
@@ -47,53 +46,51 @@ const Career = memo(({ isEdit }: CareerProps) => {
   const addNewExperience = () => {
     const newExperience: JobExperience = {
       id: Date.now().toString(),
-      jobTitle: "",
-      companyName: "",
-      startDate: "",
-      endDate: "",
-      isPresentJob: false,
+      job_title: "",
+      company_name: "",
+      start_date: "",
+      end_date: "",
+      is_present_job: false,
       description: "",
     };
-    const updatedExperiences = [...jobExperiences, newExperience];
-    setValue("jobExperiences", updatedExperiences, { shouldValidate: true });
+    const updatedExperiences = [...job_experiences, newExperience];
+    setValue("job_experiences", updatedExperiences, { shouldValidate: true });
   };
 
   const removeExperienceEntry = (index: number) => {
-    if (jobExperiences.length > 1 && index > 0) {
-      const updatedExperiences = jobExperiences.filter((_, i) => i !== index);
-      setValue("jobExperiences", updatedExperiences, { shouldValidate: true });
+    if (job_experiences.length > 1) {
+      const updatedExperiences = job_experiences.filter((_, i) => i !== index);
+      setValue("job_experiences", updatedExperiences, { shouldValidate: true });
     }
   };
 
   console.log("educations from watchedValues:", educations);
-  console.log("jobExperiences from watchedValues:", jobExperiences);
+  console.log("job_experiences from watchedValues:", job_experiences);
   return (
-    <div className="gap-8 w-full grid grid-cols-1 md:grid-cols-2">
+    <div className="gap-8 md:gap-12 w-full grid grid-cols-1 md:grid-cols-2">
       <div>
         <div className="flex justify-between items-center mb-1">
           <h4 className="text-md font-medium">Education</h4>
-          {isEdit && (
-            <Button
-              color="primary"
-              variant="light"
-              size="sm"
-              onPress={addNewEducation}
-              className="rounded-none"
-            >
-              Add Education
-            </Button>
-          )}
+          <Button
+            color="primary"
+            variant="light"
+            size="sm"
+            onPress={addNewEducation}
+            className="rounded-none"
+          >
+            Add Education
+          </Button>
         </div>
         <div className="flex flex-col gap-6">
           {educations.map((education: Education, index: number) => (
             <div key={education.id || index} className="border-none">
               <div className="flex justify-between items-center mb-4">
-                {index > 0 && (
+                {educations.length > 1 && (
                   <h4 className="text-md font-medium">
                     Education #{index + 1}
                   </h4>
                 )}
-                {isEdit && educations.length > 1 && index > 0 && (
+                {isEdit && educations.length > 1 && (
                   <Button
                     color="danger"
                     variant="light"
@@ -111,18 +108,18 @@ const Career = memo(({ isEdit }: CareerProps) => {
                   label="University Name"
                   placeholder="Enter your university name"
                   value={
-                    watchedValues.educations?.[index]?.universityName || ""
+                    watchedValues.educations?.[index]?.university_name || ""
                   }
                   isReadOnly={!isEdit}
                   isLoading={isLoading}
-                  error={errors.educations?.[index]?.universityName}
+                  error={errors.educations?.[index]?.university_name}
                   isInvalid={
-                    !isValid && !!errors.educations?.[index]?.universityName
+                    !isValid && !!errors.educations?.[index]?.university_name
                   }
-                  {...register(`educations.${index}.universityName`, {
+                  {...register(`educations.${index}.university_name`, {
                     required: "University name is required",
                     onChange: () =>
-                      trigger(`educations.${index}.universityName`),
+                      trigger(`educations.${index}.university_name`),
                   })}
                 />
 
@@ -132,18 +129,18 @@ const Career = memo(({ isEdit }: CareerProps) => {
                   isReadOnly={!isEdit}
                   isLoading={isLoading}
                   selectedKeys={
-                    watchedValues.educations?.[index]?.degreeType
-                      ? [watchedValues.educations[index].degreeType]
+                    watchedValues.educations?.[index]?.degree_type
+                      ? [watchedValues.educations[index].degree_type]
                       : []
                   }
-                  error={errors.educations?.[index]?.degreeType}
-                  {...register(`educations.${index}.degreeType`, {
+                  error={errors.educations?.[index]?.degree_type}
+                  {...register(`educations.${index}.degree_type`, {
                     required: "Degree type is required",
                   })}
                   onSelectionChange={(keys) => {
                     const selectedKey = Array.from(keys)[0] as DegreeType;
                     if (selectedKey) {
-                      setValue(`educations.${index}.degreeType`, selectedKey, {
+                      setValue(`educations.${index}.degree_type`, selectedKey, {
                         shouldValidate: true,
                       });
                     }
@@ -157,16 +154,16 @@ const Career = memo(({ isEdit }: CareerProps) => {
                 <FormInput
                   label="Course Name"
                   placeholder="Enter your course/major name"
-                  value={watchedValues.educations?.[index]?.courseName || ""}
+                  value={watchedValues.educations?.[index]?.course_name || ""}
                   isReadOnly={!isEdit}
                   isLoading={isLoading}
-                  error={errors.educations?.[index]?.courseName}
+                  error={errors.educations?.[index]?.course_name}
                   isInvalid={
-                    !isValid && !!errors.educations?.[index]?.courseName
+                    !isValid && !!errors.educations?.[index]?.course_name
                   }
-                  {...register(`educations.${index}.courseName`, {
+                  {...register(`educations.${index}.course_name`, {
                     required: "Course name is required",
-                    onChange: () => trigger(`educations.${index}.courseName`),
+                    onChange: () => trigger(`educations.${index}.course_name`),
                   })}
                 />
               </div>
@@ -178,28 +175,26 @@ const Career = memo(({ isEdit }: CareerProps) => {
       <div>
         <div className="flex justify-between items-center mb-1">
           <h4 className="text-md font-medium">Job Experience</h4>
-          {isEdit && (
-            <Button
-              color="primary"
-              variant="light"
-              size="sm"
-              onPress={addNewExperience}
-              className="rounded-none"
-            >
-              Add Experience
-            </Button>
-          )}
+          <Button
+            color="primary"
+            variant="light"
+            size="sm"
+            onPress={addNewExperience}
+            className="rounded-none"
+          >
+            Add Experience
+          </Button>
         </div>
         <div className="flex flex-col gap-4">
-          {jobExperiences.map((experience: JobExperience, index: number) => (
+          {job_experiences.map((experience: JobExperience, index: number) => (
             <div key={experience.id || index} className="border-none">
               <div className="flex justify-between items-center mb-4">
-                {index > 0 && (
+                {job_experiences.length > 1 && (
                   <h4 className="text-md font-medium">
                     Experience #{index + 1}
                   </h4>
                 )}
-                {isEdit && jobExperiences.length > 1 && index > 0 && (
+                {isEdit && job_experiences.length > 1 && (
                   <Button
                     color="danger"
                     variant="light"
@@ -216,16 +211,19 @@ const Career = memo(({ isEdit }: CareerProps) => {
                   type="text"
                   label="Job Title"
                   placeholder="Enter job title"
-                  value={watchedValues.jobExperiences?.[index]?.jobTitle || ""}
+                  value={
+                    watchedValues.job_experiences?.[index]?.job_title || ""
+                  }
                   isReadOnly={!isEdit}
                   isLoading={isLoading}
-                  error={errors.jobExperiences?.[index]?.jobTitle}
+                  error={errors.job_experiences?.[index]?.job_title}
                   isInvalid={
-                    !isValid && !!errors.jobExperiences?.[index]?.jobTitle
+                    !isValid && !!errors.job_experiences?.[index]?.job_title
                   }
-                  {...register(`jobExperiences.${index}.jobTitle`, {
+                  {...register(`job_experiences.${index}.job_title`, {
                     required: "Job title is required",
-                    onChange: () => trigger(`jobExperiences.${index}.jobTitle`),
+                    onChange: () =>
+                      trigger(`job_experiences.${index}.job_title`),
                   })}
                 />
 
@@ -234,18 +232,18 @@ const Career = memo(({ isEdit }: CareerProps) => {
                   label="Company Name"
                   placeholder="Enter company name"
                   value={
-                    watchedValues.jobExperiences?.[index]?.companyName || ""
+                    watchedValues.job_experiences?.[index]?.company_name || ""
                   }
                   isReadOnly={!isEdit}
                   isLoading={isLoading}
-                  error={errors.jobExperiences?.[index]?.companyName}
+                  error={errors.job_experiences?.[index]?.company_name}
                   isInvalid={
-                    !isValid && !!errors.jobExperiences?.[index]?.companyName
+                    !isValid && !!errors.job_experiences?.[index]?.company_name
                   }
-                  {...register(`jobExperiences.${index}.companyName`, {
+                  {...register(`job_experiences.${index}.company_name`, {
                     required: "Company name is required",
                     onChange: () =>
-                      trigger(`jobExperiences.${index}.companyName`),
+                      trigger(`job_experiences.${index}.company_name`),
                   })}
                 />
 
@@ -254,47 +252,49 @@ const Career = memo(({ isEdit }: CareerProps) => {
                     type="date"
                     label="Start Date"
                     value={
-                      watchedValues.jobExperiences?.[index]?.startDate || ""
+                      watchedValues.job_experiences?.[index]?.start_date || ""
                     }
                     isReadOnly={!isEdit}
                     isLoading={isLoading}
-                    error={errors.jobExperiences?.[index]?.startDate}
+                    error={errors.job_experiences?.[index]?.start_date}
                     isInvalid={
-                      !isValid && !!errors.jobExperiences?.[index]?.startDate
+                      !isValid && !!errors.job_experiences?.[index]?.start_date
                     }
-                    {...register(`jobExperiences.${index}.startDate`, {
+                    {...register(`job_experiences.${index}.start_date`, {
                       required: "Start date is required",
                       onChange: () =>
-                        trigger(`jobExperiences.${index}.startDate`),
+                        trigger(`job_experiences.${index}.start_date`),
                     })}
                   />
 
                   <FormInput
                     type="date"
                     label="End Date"
-                    value={watchedValues.jobExperiences?.[index]?.endDate || ""}
+                    value={
+                      watchedValues.job_experiences?.[index]?.end_date || ""
+                    }
                     isDisabled={
-                      watchedValues.jobExperiences?.[index]?.isPresentJob ||
+                      watchedValues.job_experiences?.[index]?.is_present_job ||
                       !isEdit
                     }
                     isLoading={isLoading}
                     isInvalid={
                       !isValid &&
-                      !!errors.jobExperiences?.[index]?.endDate &&
-                      !watchedValues.jobExperiences?.[index]?.isPresentJob
+                      !!errors.job_experiences?.[index]?.end_date &&
+                      !watchedValues.job_experiences?.[index]?.is_present_job
                     }
                     error={
-                      !watchedValues.jobExperiences?.[index]?.isPresentJob
-                        ? errors.jobExperiences?.[index]?.endDate
+                      !watchedValues.job_experiences?.[index]?.is_present_job
+                        ? errors.job_experiences?.[index]?.end_date
                         : undefined
                     }
-                    {...register(`jobExperiences.${index}.endDate`, {
-                      required: !watchedValues.jobExperiences?.[index]
-                        ?.isPresentJob
+                    {...register(`job_experiences.${index}.end_date`, {
+                      required: !watchedValues.job_experiences?.[index]
+                        ?.is_present_job
                         ? "End date is required"
                         : false,
                       onChange: () =>
-                        trigger(`jobExperiences.${index}.endDate`),
+                        trigger(`job_experiences.${index}.end_date`),
                     })}
                   />
                 </div>
@@ -303,15 +303,20 @@ const Career = memo(({ isEdit }: CareerProps) => {
                   className="mb-3"
                   size="sm"
                   isSelected={
-                    watchedValues.jobExperiences?.[index]?.isPresentJob || false
+                    watchedValues.job_experiences?.[index]?.is_present_job ||
+                    false
                   }
                   isDisabled={!isEdit}
                   onValueChange={(checked) => {
-                    setValue(`jobExperiences.${index}.isPresentJob`, checked, {
-                      shouldValidate: true,
-                    });
+                    setValue(
+                      `job_experiences.${index}.is_present_job`,
+                      checked,
+                      {
+                        shouldValidate: true,
+                      }
+                    );
                     if (checked) {
-                      setValue(`jobExperiences.${index}.endDate`, "", {
+                      setValue(`job_experiences.${index}.end_date`, "", {
                         shouldValidate: true,
                       });
                     }
@@ -327,26 +332,26 @@ const Career = memo(({ isEdit }: CareerProps) => {
                   araia-label="Job Description"
                   placeholder="Describe your responsibilities and achievements"
                   value={
-                    watchedValues.jobExperiences?.[index]?.description || ""
+                    watchedValues.job_experiences?.[index]?.description || ""
                   }
                   isDisabled={!isEdit}
                   minRows={3}
                   radius="none"
                   isInvalid={
                     !isValid &&
-                    !!errors.jobExperiences?.[index]?.description?.message
+                    !!errors.job_experiences?.[index]?.description?.message
                   }
                   errorMessage={
-                    errors.jobExperiences?.[index]?.description?.message
+                    errors.job_experiences?.[index]?.description?.message
                   }
-                  {...register(`jobExperiences.${index}.description`, {
+                  {...register(`job_experiences.${index}.description`, {
                     required: "Job description is required",
                     minLength: {
                       value: 10,
                       message: "Description must be at least 10 characters",
                     },
                     onChange: () =>
-                      trigger(`jobExperiences.${index}.description`),
+                      trigger(`job_experiences.${index}.description`),
                   })}
                 />
               </div>

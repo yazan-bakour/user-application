@@ -38,9 +38,9 @@ const Projects = memo(({ isEdit }: ProjectsProps) => {
       description: "",
       technologies: "",
       link: "",
-      startDate: "",
-      endDate: "",
-      isOngoing: false,
+      start_date: "",
+      end_date: "",
+      is_ongoing: false,
     };
     appendProject(newProject);
   };
@@ -69,7 +69,10 @@ const Projects = memo(({ isEdit }: ProjectsProps) => {
       </div>
       <div className="flex flex-col gap-x-6">
         {projectFields.map((field, index) => (
-          <div key={field.id} className={"border-none"}>
+          <div
+            key={field.id}
+            className={`border-none ${projectFields.length > 1 ? "mb-4" : ""}`}
+          >
             <div className="flex justify-between items-center mb-4">
               {index > 0 && (
                 <h5 className="text-sm font-medium">Project #{index + 1}</h5>
@@ -89,11 +92,9 @@ const Projects = memo(({ isEdit }: ProjectsProps) => {
             <div className="flex flex-col gap-1">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-x-4">
                 <FormInput
-                  type="text"
                   label="Project Title"
                   placeholder="e.g., E-commerce Website"
                   value={watchedValues.projects?.[index]?.title || ""}
-                  isReadOnly={!isEdit}
                   isLoading={isLoading}
                   error={errors.projects?.[index]?.title}
                   isInvalid={!isValid && !!errors.projects?.[index]?.title}
@@ -135,41 +136,43 @@ const Projects = memo(({ isEdit }: ProjectsProps) => {
                 <FormInput
                   type="date"
                   label="Start Date"
-                  value={watchedValues.projects?.[index]?.startDate || ""}
+                  value={watchedValues.projects?.[index]?.start_date || ""}
                   isReadOnly={!isEdit}
                   isLoading={isLoading}
-                  error={errors.projects?.[index]?.startDate}
-                  isInvalid={!isValid && !!errors.projects?.[index]?.startDate}
-                  {...register(`projects.${index}.startDate`, {
-                    onChange: () => trigger(`projects.${index}.startDate`),
+                  error={errors.projects?.[index]?.start_date}
+                  isInvalid={!isValid && !!errors.projects?.[index]?.start_date}
+                  {...register(`projects.${index}.start_date`, {
+                    onChange: () => trigger(`projects.${index}.start_date`),
                   })}
                 />
                 <FormInput
                   type="date"
                   label="End Date"
-                  value={watchedValues.projects?.[index]?.endDate || ""}
+                  value={watchedValues.projects?.[index]?.end_date || ""}
                   isDisabled={
-                    !isEdit || watchedValues.projects?.[index]?.isOngoing
+                    !isEdit || watchedValues.projects?.[index]?.is_ongoing
                   }
                   isLoading={isLoading}
-                  error={errors.projects?.[index]?.endDate}
-                  isInvalid={!isValid && !!errors.projects?.[index]?.endDate}
-                  {...register(`projects.${index}.endDate`, {
-                    onChange: () => trigger(`projects.${index}.endDate`),
+                  error={errors.projects?.[index]?.end_date}
+                  isInvalid={!isValid && !!errors.projects?.[index]?.end_date}
+                  {...register(`projects.${index}.end_date`, {
+                    onChange: () => trigger(`projects.${index}.end_date`),
                   })}
                 />
               </div>
               <Checkbox
                 size="sm"
-                isSelected={watchedValues.projects?.[index]?.isOngoing || false}
+                isSelected={
+                  watchedValues.projects?.[index]?.is_ongoing || false
+                }
                 isDisabled={!isEdit}
                 radius="none"
                 onValueChange={(checked) => {
-                  setValue(`projects.${index}.isOngoing`, checked, {
+                  setValue(`projects.${index}.is_ongoing`, checked, {
                     shouldValidate: true,
                   });
                   if (checked) {
-                    setValue(`projects.${index}.endDate`, "", {
+                    setValue(`projects.${index}.end_date`, "", {
                       shouldValidate: true,
                     });
                   }

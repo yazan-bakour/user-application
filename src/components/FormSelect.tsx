@@ -2,15 +2,15 @@
 
 import { Select, Skeleton } from "@heroui/react";
 import { forwardRef } from "react";
-import { FieldError, UseFormRegisterReturn } from "react-hook-form";
+import { FieldError } from "react-hook-form";
 import { SelectProps } from "@heroui/react";
+import { CollectionChildren } from "@react-types/shared";
 
 interface FormSelectProps extends Omit<SelectProps, "children" | "label"> {
   label: string;
-  registration?: UseFormRegisterReturn;
   error?: FieldError;
   defaultErrorMessage?: string;
-  children: React.ReactNode;
+  children: CollectionChildren<object>;
   isReadOnly?: boolean;
   isLoading?: boolean;
   id?: string;
@@ -21,12 +21,10 @@ const FormSelect = forwardRef<HTMLSelectElement, FormSelectProps>(
     {
       label,
       placeholder = "Select an option",
-      selectedKeys = [],
       isDisabled = false,
       isReadOnly = false,
       isInvalid,
       errorMessage,
-      registration,
       error,
       defaultErrorMessage,
       onSelectionChange,
@@ -46,10 +44,8 @@ const FormSelect = forwardRef<HTMLSelectElement, FormSelectProps>(
 
     const finalIsInvalid = isInvalid !== undefined ? isInvalid : !!error;
 
-    // Generate aria-label from id or use label as fallback
     const ariaLabel = id ? `${id}-select` : label;
 
-    // Default classNames with border-b-1 applied
     const defaultClassNames = {
       trigger: "border-b-1 border-primary",
       mainWrapper: "h-[64px]",
@@ -82,19 +78,15 @@ const FormSelect = forwardRef<HTMLSelectElement, FormSelectProps>(
           radius={radius}
           size={size}
           placeholder={placeholder}
-          {...(registration ? {} : { selectedKeys })}
           isDisabled={isDisabled}
-          isReadOnly={isReadOnly}
           isInvalid={finalIsInvalid}
           errorMessage={finalErrorMessage}
           onSelectionChange={onSelectionChange}
           className={className}
           id={id}
           aria-label={ariaLabel}
-          {...registration}
           {...props}
         >
-          {/* @ts-expect-error - HeroUI Select children type mismatch */}
           {children}
         </Select>
       </div>

@@ -9,59 +9,18 @@ import {
   TableCell,
   Button,
   Chip,
-  Card,
-  CardBody,
   Pagination,
-  Skeleton,
 } from "@heroui/react";
 import { useState, useEffect, useMemo } from "react";
 import Link from "next/link";
-
-interface APIFormData {
-  id: string;
-  first_name: string;
-  last_name: string;
-  email: string;
-  mobile_number: string;
-  date_of_birth: string;
-  city: string;
-  country: string;
-  title: string;
-  marital_status: string;
-  preferred_work_type: string | null;
-  expected_salary: string;
-  created_at: string;
-  updated_at: string;
-  educations: Array<{
-    id: string;
-    university_name: string;
-    degree_type: string;
-    course_name: string;
-  }>;
-  job_experiences: Array<{
-    id: string;
-    job_title: string;
-    company_name: string;
-    start_date: string;
-    end_date: string;
-    is_present_job: boolean;
-  }>;
-  skills: Array<{
-    id: string;
-    name: string;
-    level: string;
-    category: string;
-  }>;
-}
-
-interface FormDataItem {
-  id: string;
-  form_data: APIFormData;
-}
+import BottomNavigation from "../../components/BottomNavigation";
+import TableSkeleton from "./TableSkelaton";
+import ErrorPage from "../../components/ErrorPage";
+import { APIFormData } from "../types";
 
 interface FormsResponse {
   success: boolean;
-  data: FormDataItem[];
+  data: APIFormData[];
   count: number;
   timestamp: string;
 }
@@ -73,7 +32,7 @@ if (!API_BASE_URL) {
 }
 
 export default function FormsListPage() {
-  const [forms, setForms] = useState<FormDataItem[]>([]);
+  const [forms, setForms] = useState<APIFormData[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [page, setPage] = useState(1);
@@ -84,7 +43,7 @@ export default function FormsListPage() {
     column: "created",
     direction: "descending",
   });
-  const rowsPerPage = 10;
+  const rowsPerPage = 8;
 
   const handleSortChange = (descriptor: {
     column: string | number;
@@ -154,12 +113,13 @@ export default function FormsListPage() {
   };
 
   const columns = [
-    { key: "name", label: "NAME", width: 140, sortable: true },
-    { key: "email", label: "EMAIL", width: 195, sortable: true },
-    { key: "work_type", label: "WORK TYPE", width: 120, sortable: true },
-    { key: "experience", label: "EXPERIENCE", width: 150, sortable: false },
-    { key: "created", label: "CREATED", width: 163, sortable: true },
-    { key: "actions", label: "ACTIONS", width: 172, sortable: false },
+    { key: "name", label: "NAME", width: 106, sortable: true },
+    { key: "email", label: "EMAIL", width: 197, sortable: true },
+    { key: "work_type", label: "WORK TYPE", width: 116, sortable: true },
+    { key: "experience", label: "EXPERIENCE", width: 127, sortable: false },
+    { key: "created", label: "CREATED", width: 116, sortable: true },
+    { key: "updated", label: "UPDATED", width: 116, sortable: true },
+    { key: "actions", label: "ACTIONS", width: 165, sortable: false },
   ];
 
   const pages = Math.ceil(forms.length / rowsPerPage);
@@ -173,22 +133,24 @@ export default function FormsListPage() {
 
         switch (sortDescriptor.column) {
           case "name":
-            first =
-              `${a.form_data.first_name} ${a.form_data.last_name}`.toLowerCase();
-            second =
-              `${b.form_data.first_name} ${b.form_data.last_name}`.toLowerCase();
+            first = `${a.first_name} ${a.last_name}`.toLowerCase();
+            second = `${b.first_name} ${b.last_name}`.toLowerCase();
             break;
           case "email":
-            first = a.form_data.email.toLowerCase();
-            second = b.form_data.email.toLowerCase();
+            first = a.email.toLowerCase();
+            second = b.email.toLowerCase();
             break;
           case "work_type":
-            first = a.form_data.preferred_work_type || "";
-            second = b.form_data.preferred_work_type || "";
+            first = a.preferred_work_type || "";
+            second = b.preferred_work_type || "";
             break;
           case "created":
-            first = new Date(a.form_data.created_at).getTime();
-            second = new Date(b.form_data.created_at).getTime();
+            first = new Date(a.created_at).getTime();
+            second = new Date(b.created_at).getTime();
+            break;
+          case "updated":
+            first = new Date(a.updated_at).getTime();
+            second = new Date(b.updated_at).getTime();
             break;
           default:
             first = "";
@@ -220,137 +182,11 @@ export default function FormsListPage() {
   }, [page, sortedItems]);
 
   if (isLoading) {
-    return (
-      <div className="container mx-auto px-4">
-        <div className="mb-6">
-          <div>
-            <h1 className="text-3xl font-bold text-primary-800">
-              Applications
-            </h1>
-            <p className="text-primary-500 mt-2">Loading...</p>
-          </div>
-        </div>
-
-        <div className="w-full">
-          <Table
-            radius="none"
-            shadow="none"
-            aria-label="Forms table"
-            isStriped
-            classNames={{
-              wrapper: "p-0",
-              table: "w-full",
-              tbody: "h-[500px]",
-              tr: "h-12",
-            }}
-          >
-            <TableHeader columns={columns}>
-              {(column) => (
-                <TableColumn
-                  key={column.key}
-                  className="bg-primary-50 text-xs"
-                  width={column.width}
-                  allowsSorting={column.sortable}
-                >
-                  {column.label}
-                </TableColumn>
-              )}
-            </TableHeader>
-            <TableBody emptyContent="Loading...">
-              {Array.from({ length: 10 }).map((_, index) => (
-                <TableRow key={index}>
-                  <TableCell>
-                    <div className="flex flex-col gap-1">
-                      <Skeleton className="h-3 w-32 rounded" />
-                      <Skeleton className="h-3 w-24 rounded" />
-                    </div>
-                  </TableCell>
-                  <TableCell>
-                    <div className="flex flex-col gap-1">
-                      <Skeleton className="h-3 w-40 rounded" />
-                      <Skeleton className="h-3 w-28 rounded" />
-                    </div>
-                  </TableCell>
-                  <TableCell>
-                    <Skeleton className="h-6 w-20 rounded" />
-                  </TableCell>
-                  <TableCell>
-                    <div className="flex flex-col gap-1">
-                      <Skeleton className="h-3 w-36 rounded" />
-                      <Skeleton className="h-3 w-28 rounded" />
-                    </div>
-                  </TableCell>
-                  <TableCell>
-                    <Skeleton className="h-3 w-24 rounded" />
-                  </TableCell>
-                  <TableCell>
-                    <div className="flex gap-2">
-                      <Skeleton className="h-6 w-12 rounded" />
-                      <Skeleton className="h-6 w-12 rounded" />
-                    </div>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </div>
-
-        {/* Fixed bottom navigation buttons */}
-        <div className="fixed bottom-0 left-0 right-0 bg-background border-gray-200 border-t p-4 z-50">
-          <div className="max-w-5xl mx-auto flex justify-between">
-            <Button
-              color="primary"
-              variant="flat"
-              onPress={fetchForms}
-              radius="none"
-              className="px-8 py-3"
-              isDisabled
-            >
-              Refresh
-            </Button>
-            <Link href="/wizard">
-              <Button color="primary" radius="none" className="px-8 py-3">
-                Create New Form
-              </Button>
-            </Link>
-          </div>
-        </div>
-      </div>
-    );
+    return <TableSkeleton columns={columns} />;
   }
 
   if (error) {
-    return (
-      <div className="h-screen flex flex-col">
-        <div className="flex-1 flex justify-center items-center">
-          <Card className="max-w-md">
-            <CardBody className="text-center">
-              <p className="text-danger mb-4">Error: {error}</p>
-            </CardBody>
-          </Card>
-        </div>
-
-        {/* Fixed bottom navigation buttons */}
-        <div className="fixed bottom-0 left-0 right-0 bg-background border-gray-200 p-4 shadow-lg z-50">
-          <div className="max-w-4xl mx-auto flex justify-between">
-            <Button
-              color="primary"
-              variant="flat"
-              onPress={fetchForms}
-              radius="none"
-              className="px-8 py-3"
-            >
-              Retry
-            </Button>
-            <Link href="/wizard">
-              <Button color="primary" radius="none" className="px-8 py-3">
-                Create New Form
-              </Button>
-            </Link>
-          </div>
-        </div>
-      </div>
-    );
+    return <ErrorPage error={error} reset={fetchForms} />;
   }
 
   return (
@@ -374,9 +210,10 @@ export default function FormsListPage() {
           onSortChange={handleSortChange}
           classNames={{
             wrapper: "p-0",
-            table: "w-full",
-            tbody: "h-[500px]",
-            tr: "h-12",
+            table: "w-full table-fixed h-[510px]",
+            tbody: "h-[400px]",
+            tr: "h-14",
+            td: "py-0",
           }}
           bottomContent={
             pages > 0 ? (
@@ -410,59 +247,59 @@ export default function FormsListPage() {
           <TableBody items={items} emptyContent="No forms found">
             {(item) => (
               <TableRow key={item.id}>
-                <TableCell>
-                  <div className="flex flex-col">
-                    <p className="font-medium text-xs">
-                      {item.form_data.title} {item.form_data.first_name}{" "}
-                      {item.form_data.last_name}
+                <TableCell width={106}>
+                  <div className="flex flex-col h-12 justify-center">
+                    <p className="font-medium text-xs truncate">
+                      {item.title} {item.first_name} {item.last_name}
                     </p>
-                    <p className="text-xs text-default-500">
-                      {item.form_data.date_of_birth}
-                    </p>
-                  </div>
-                </TableCell>
-
-                <TableCell>
-                  <div className="flex flex-col">
-                    <p className="font-medium text-xs">
-                      {item.form_data.email}
-                    </p>
-                    <p className="text-xs text-default-500">
-                      {item.form_data.mobile_number}
+                    <p className="text-xs text-default-500 truncate">
+                      {item.date_of_birth}
                     </p>
                   </div>
                 </TableCell>
 
-                <TableCell>
-                  <Chip
-                    color={getWorkTypeColor(item.form_data.preferred_work_type)}
-                    variant="flat"
-                    size="sm"
-                    radius="none"
-                    classNames={{
-                      base: "text-xs",
-                      content: "text-xs",
-                    }}
-                  >
-                    {item.form_data.preferred_work_type || "Not specified"}
-                  </Chip>
+                <TableCell width={197}>
+                  <div className="flex flex-col h-12 justify-center">
+                    <p className="font-medium text-xs truncate">{item.email}</p>
+                    <p className="text-xs text-default-500 truncate">
+                      {item.mobile_number}
+                    </p>
+                  </div>
                 </TableCell>
 
-                <TableCell>
-                  <div className="flex flex-col">
-                    {item.form_data.job_experiences.length > 0 ? (
+                <TableCell width={116}>
+                  <div className="flex h-12 items-center">
+                    <Chip
+                      color={getWorkTypeColor(item.preferred_work_type)}
+                      variant="flat"
+                      size="sm"
+                      radius="none"
+                      classNames={{
+                        base: "text-[10px]",
+                        content: "text-[10px]",
+                      }}
+                    >
+                      {item.preferred_work_type || "Not specified"}
+                    </Chip>
+                  </div>
+                </TableCell>
+
+                <TableCell width={127}>
+                  <div className="flex flex-col h-12 justify-center">
+                    {item.job_experiences.length > 0 ? (
                       <>
-                        <p className="font-medium text-xs">
-                          {item.form_data.job_experiences[0].job_title}
+                        <p className="font-medium text-xs truncate">
+                          {item.job_experiences[0].job_title}
                         </p>
-                        <p className="text-xs text-default-500">
-                          {item.form_data.job_experiences[0].company_name}
+                        <p className="text-xs text-default-500 truncate">
+                          {item.job_experiences[0].company_name}
+                          {item.job_experiences.length > 1 && (
+                            <span className="text-primary-500">
+                              {" "}
+                              +{item.job_experiences.length - 1} more
+                            </span>
+                          )}
                         </p>
-                        {item.form_data.job_experiences.length > 1 && (
-                          <p className="text-xs text-primary-500">
-                            +{item.form_data.job_experiences.length - 1} more
-                          </p>
-                        )}
                       </>
                     ) : (
                       <p className="text-xs text-default-400">No experience</p>
@@ -470,40 +307,42 @@ export default function FormsListPage() {
                   </div>
                 </TableCell>
 
-                <TableCell>
-                  <p className="text-xs">
-                    {formatDate(item.form_data.created_at)}
-                  </p>
+                <TableCell width={116}>
+                  <div className="flex h-12 items-center">
+                    <p className="text-xs">{formatDate(item.created_at)}</p>
+                  </div>
                 </TableCell>
 
-                <TableCell>
-                  <div className="flex gap-2">
-                    <Button
-                      size="sm"
-                      variant="light"
-                      color="primary"
-                      radius="none"
-                      className="text-xs"
-                      onPress={() => {
-                        // TODO: Implement view details
-                        console.log("View form:", item.id);
-                      }}
-                    >
-                      View
-                    </Button>
-                    <Button
-                      size="sm"
-                      variant="light"
-                      color="warning"
-                      radius="none"
-                      className="text-xs"
-                      onPress={() => {
-                        // TODO: Implement edit
-                        console.log("Edit form:", item.id);
-                      }}
-                    >
-                      Edit
-                    </Button>
+                <TableCell width={116}>
+                  <div className="flex h-12 items-center">
+                    <p className="text-xs">{formatDate(item.updated_at)}</p>
+                  </div>
+                </TableCell>
+
+                <TableCell width={165}>
+                  <div className="flex gap-2 h-12 items-center">
+                    <Link href={`/forms/${item.id}`}>
+                      <Button
+                        size="sm"
+                        variant="flat"
+                        color="primary"
+                        radius="none"
+                        className="text-xs"
+                      >
+                        View
+                      </Button>
+                    </Link>
+                    <Link href={`/wizard/edit/${item.id}`}>
+                      <Button
+                        size="sm"
+                        variant="flat"
+                        color="warning"
+                        radius="none"
+                        className="text-xs"
+                      >
+                        Edit
+                      </Button>
+                    </Link>
                   </div>
                 </TableCell>
               </TableRow>
@@ -512,25 +351,20 @@ export default function FormsListPage() {
         </Table>
       </div>
 
-      {/* Fixed bottom navigation buttons */}
-      <div className="fixed bottom-0 left-0 right-0 bg-background border-gray-200 border-t p-4 z-50">
-        <div className="max-w-5xl mx-auto flex justify-between">
-          <Button
-            color="primary"
-            variant="flat"
-            onPress={fetchForms}
-            radius="none"
-            className="px-8 py-3"
-          >
-            Refresh
-          </Button>
-          <Link href="/wizard">
-            <Button color="primary" radius="none" className="px-8 py-3">
-              Create New Form
-            </Button>
-          </Link>
-        </div>
-      </div>
+      <BottomNavigation
+        leftButton={{
+          text: "Refresh",
+          onClick: fetchForms,
+          variant: "flat",
+          color: "primary",
+        }}
+        rightButton={{
+          text: "Create New Form",
+          href: "/wizard",
+          variant: "solid",
+          color: "primary",
+        }}
+      />
     </div>
   );
 }

@@ -30,7 +30,9 @@ const Info = memo(({ isEdit }: InfoProps) => {
           placeholder="Select title"
           isLoading={isLoading}
           error={errors.title}
-          registration={register("title", { required: "Title is required" })}
+          value={watchedValues.title || ""}
+          selectedKeys={watchedValues.title ? [watchedValues.title] : []}
+          {...register("title", { required: "Title is required" })}
           onSelectionChange={(keys) => {
             const selectedKey = Array.from(keys)[0] as Title;
             if (selectedKey) {
@@ -49,17 +51,21 @@ const Info = memo(({ isEdit }: InfoProps) => {
           label="Marital Status"
           placeholder="Select status"
           isLoading={isLoading}
-          error={errors.maritalStatus}
-          registration={register("maritalStatus", {
+          value={watchedValues.marital_status}
+          error={errors.marital_status}
+          selectedKeys={
+            watchedValues.marital_status ? [watchedValues.marital_status] : []
+          }
+          {...register("marital_status", {
             required: "Status is required",
           })}
           onSelectionChange={(keys) => {
             const selectedKey = Array.from(keys)[0] as MaritalStatus;
             if (selectedKey) {
-              setValue("maritalStatus", selectedKey, {
+              setValue("marital_status", selectedKey, {
                 shouldValidate: true,
               });
-              trigger("maritalStatus");
+              trigger("marital_status");
             }
           }}
         >
@@ -77,18 +83,18 @@ const Info = memo(({ isEdit }: InfoProps) => {
           isRequired
           label="First Name"
           placeholder="Enter first name"
-          value={watchedValues.firstName || ""}
+          value={watchedValues.first_name || ""}
           isReadOnly={!isEdit}
           isLoading={isLoading}
-          error={errors.firstName}
-          isInvalid={!isValid && !!errors.firstName}
-          {...register("firstName", {
+          error={errors.first_name}
+          isInvalid={!isValid && !!errors.first_name}
+          {...register("first_name", {
             required: "First name is required",
             maxLength: {
               value: 80,
               message: "First name must be less than 80 characters",
             },
-            onChange: () => trigger("firstName"),
+            onChange: () => trigger("first_name"),
           })}
         />
 
@@ -96,18 +102,18 @@ const Info = memo(({ isEdit }: InfoProps) => {
           isRequired
           label="Last Name"
           placeholder="Enter last name"
-          value={watchedValues.lastName || ""}
+          value={watchedValues.last_name || ""}
           isReadOnly={!isEdit}
           isLoading={isLoading}
-          error={errors.lastName}
-          isInvalid={!isValid && !!errors.lastName}
-          {...register("lastName", {
+          error={errors.last_name}
+          isInvalid={!isValid && !!errors.last_name}
+          {...register("last_name", {
             required: "Last name is required",
             maxLength: {
               value: 100,
               message: "Last name must be less than 100 characters",
             },
-            onChange: () => trigger("lastName"),
+            onChange: () => trigger("last_name"),
           })}
         />
       </div>
@@ -141,14 +147,14 @@ const Info = memo(({ isEdit }: InfoProps) => {
             type="date"
             label="Date of Birth"
             placeholder="Select date of birth"
-            value={watchedValues.dateOfBirth || ""}
+            value={watchedValues.date_of_birth || ""}
             isReadOnly={!isEdit}
             isLoading={isLoading}
-            error={errors.dateOfBirth}
-            isInvalid={!isValid && !!errors.dateOfBirth}
-            {...register("dateOfBirth", {
+            error={errors.date_of_birth}
+            isInvalid={!isValid && !!errors.date_of_birth}
+            {...register("date_of_birth", {
               required: "Date of birth is required",
-              onChange: () => trigger("dateOfBirth"),
+              onChange: () => trigger("date_of_birth"),
             })}
           />
         </div>
@@ -158,12 +164,12 @@ const Info = memo(({ isEdit }: InfoProps) => {
             type="tel"
             label="Mobile Number"
             placeholder="Enter mobile"
-            value={watchedValues.mobileNumber || ""}
+            value={watchedValues.mobile_number || ""}
             isLoading={isLoading}
             isReadOnly={!isEdit}
-            error={errors.mobileNumber}
-            isInvalid={!isValid && !!errors.mobileNumber}
-            {...register("mobileNumber", {
+            error={errors.mobile_number}
+            isInvalid={!isValid && !!errors.mobile_number}
+            {...register("mobile_number", {
               required: "Mobile number is required",
               minLength: {
                 value: 6,
@@ -177,7 +183,7 @@ const Info = memo(({ isEdit }: InfoProps) => {
                 value: /^[0-9]+$/,
                 message: "Mobile number must contain only numbers",
               },
-              onChange: () => trigger("mobileNumber"),
+              onChange: () => trigger("mobile_number"),
             })}
           />
         </div>
@@ -188,14 +194,14 @@ const Info = memo(({ isEdit }: InfoProps) => {
           isRequired
           label="Street Address"
           placeholder="Enter street address"
-          value={watchedValues.streetAddress || ""}
+          value={watchedValues.street_address || ""}
           isReadOnly={!isEdit}
           isLoading={isLoading}
-          error={errors.streetAddress}
-          isInvalid={!isValid && !!errors.streetAddress}
-          {...register("streetAddress", {
+          error={errors.street_address}
+          isInvalid={!isValid && !!errors.street_address}
+          {...register("street_address", {
             required: "Address is required",
-            onChange: () => trigger("streetAddress"),
+            onChange: () => trigger("street_address"),
           })}
         />
       </div>
@@ -239,14 +245,14 @@ const Info = memo(({ isEdit }: InfoProps) => {
           isRequired
           label="Postal Code"
           placeholder="Enter postal code"
-          value={watchedValues.postalCode || ""}
+          value={watchedValues.postal_code || ""}
           isReadOnly={!isEdit}
           isLoading={isLoading}
-          error={errors.postalCode}
-          isInvalid={!isValid && !!errors.postalCode}
-          {...register("postalCode", {
+          error={errors.postal_code}
+          isInvalid={!isValid && !!errors.postal_code}
+          {...register("postal_code", {
             required: "Postal code is required",
-            onChange: () => trigger("postalCode"),
+            onChange: () => trigger("postal_code"),
           })}
         />
         <FormInput

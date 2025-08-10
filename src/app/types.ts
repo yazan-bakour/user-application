@@ -45,18 +45,18 @@ export enum WorkType {
 
 export interface Education {
   id: string;
-  universityName: string;
-  degreeType: DegreeType | "";
-  courseName: string;
+  university_name: string;
+  degree_type: DegreeType | "";
+  course_name: string;
 }
 
 export interface JobExperience {
   id: string;
-  jobTitle: string;
-  companyName: string;
-  startDate: string;
-  endDate: string;
-  isPresentJob: boolean;
+  job_title: string;
+  company_name: string;
+  start_date: string;
+  end_date: string;
+  is_present_job: boolean;
   description: string;
 }
 
@@ -71,9 +71,9 @@ export interface Certification {
   id: string;
   name: string;
   issuer: string;
-  dateObtained: string;
-  expiryDate: string;
-  hasExpiry: boolean;
+  date_obtained: string;
+  expiry_date: string;
+  has_expiry: boolean;
 }
 
 export interface Language {
@@ -88,9 +88,9 @@ export interface Project {
   description: string;
   technologies: string;
   link: string;
-  startDate: string;
-  endDate: string;
-  isOngoing: boolean;
+  start_date: string;
+  end_date: string;
+  is_ongoing: boolean;
 }
 
 export interface Reference {
@@ -103,41 +103,48 @@ export interface Reference {
 }
 
 export interface FormData {
-  firstName: string;
-  lastName: string;
+  first_name: string;
+  last_name: string;
   email: string;
-  mobileNumber: string;
-  dateOfBirth: string;
-  streetAddress: string;
+  mobile_number: string;
+  date_of_birth: string;
+  street_address: string;
   city: string;
   state: string;
-  postalCode: string;
+  postal_code: string;
   country: string;
   title: Title | null;
-  maritalStatus: MaritalStatus | "";
+  marital_status: MaritalStatus | "";
   developer: string;
   job: string;
   educations: Education[];
-  jobExperiences: JobExperience[];
+  job_experiences: JobExperience[];
   // Skills & Certifications
   skills: Skill[];
   certifications: Certification[];
   languages: Language[];
   // Portfolio & Projects
   projects: Project[];
-  portfolioWebsite: string;
-  githubUrl: string;
-  linkedinUrl: string;
+  portfolio_website: string;
+  github_url: string;
+  linkedin_url: string;
   references: Reference[];
   // Preferences & Goals
-  preferredWorkType: WorkType | "";
-  expectedSalary: string;
-  preferredLocation: string;
-  availabilityDate: string;
-  careerGoals: string;
+  preferred_work_type: WorkType | "";
+  expected_salary: string;
+  preferred_location: string;
+  availability_date: string;
+  career_goals: string;
   // Additional Information
-  professionalSummary: string;
+  professional_summary: string;
   hobbies: string;
-  volunteerWork: string;
-  additionalNotes: string;
+  volunteer_work: string;
+  additional_notes: string;
+}
+
+// API response interface for form data with additional fields
+export interface APIFormData extends FormData {
+  id: string;
+  created_at: string;
+  updated_at: string;
 }

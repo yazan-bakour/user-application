@@ -16,9 +16,7 @@ const Profile = memo(({ isEdit }: ProfileProps) => {
 
   return (
     <div className="flex flex-col gap-4 w-full">
-      {/* Skills & Languages Section */}
-
-      <div className="gap-8 w-full grid grid-cols-1 md:grid-cols-2">
+      <div className="gap-8 md:gap-12 w-full grid grid-cols-1 md:grid-cols-2">
         {/* Skills */}
         <Skills isEdit={isEdit} />
 

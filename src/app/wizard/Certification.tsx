@@ -36,9 +36,9 @@ const Certification = memo(({ isEdit }: CertificationProps) => {
       id: Date.now().toString(),
       name: "",
       issuer: "",
-      dateObtained: "",
-      expiryDate: "",
-      hasExpiry: false,
+      date_obtained: "",
+      expiry_date: "",
+      has_expiry: false,
     };
     appendCertification(newCertification);
   };
@@ -122,36 +122,38 @@ const Certification = memo(({ isEdit }: CertificationProps) => {
                   type="date"
                   label="Date Obtained"
                   value={
-                    watchedValues.certifications?.[index]?.dateObtained || ""
+                    watchedValues.certifications?.[index]?.date_obtained || ""
                   }
                   isReadOnly={!isEdit}
                   isLoading={isLoading}
-                  error={errors.certifications?.[index]?.dateObtained}
+                  error={errors.certifications?.[index]?.date_obtained}
                   isInvalid={
-                    !isValid && !!errors.certifications?.[index]?.dateObtained
+                    !isValid && !!errors.certifications?.[index]?.date_obtained
                   }
-                  {...register(`certifications.${index}.dateObtained`, {
+                  {...register(`certifications.${index}.date_obtained`, {
                     required: "Date obtained is required",
                     onChange: () =>
-                      trigger(`certifications.${index}.dateObtained`),
+                      trigger(`certifications.${index}.date_obtained`),
                   })}
                 />
                 <FormInput
                   type="date"
                   label="Expiry Date"
                   value={
-                    watchedValues.certifications?.[index]?.expiryDate || ""
+                    watchedValues.certifications?.[index]?.expiry_date || ""
                   }
                   isReadOnly={!isEdit}
-                  isDisabled={!watchedValues.certifications?.[index]?.hasExpiry}
-                  isLoading={isLoading}
-                  error={errors.certifications?.[index]?.expiryDate}
-                  isInvalid={
-                    !isValid && !!errors.certifications?.[index]?.expiryDate
+                  isDisabled={
+                    !watchedValues.certifications?.[index]?.has_expiry
                   }
-                  {...register(`certifications.${index}.expiryDate`, {
+                  isLoading={isLoading}
+                  error={errors.certifications?.[index]?.expiry_date}
+                  isInvalid={
+                    !isValid && !!errors.certifications?.[index]?.expiry_date
+                  }
+                  {...register(`certifications.${index}.expiry_date`, {
                     onChange: () =>
-                      trigger(`certifications.${index}.expiryDate`),
+                      trigger(`certifications.${index}.expiry_date`),
                   })}
                 />
               </div>
@@ -159,15 +161,15 @@ const Certification = memo(({ isEdit }: CertificationProps) => {
                 radius="none"
                 size="sm"
                 isSelected={
-                  watchedValues.certifications?.[index]?.hasExpiry || false
+                  watchedValues.certifications?.[index]?.has_expiry || false
                 }
                 isDisabled={!isEdit}
                 onValueChange={(checked) => {
-                  setValue(`certifications.${index}.hasExpiry`, checked, {
+                  setValue(`certifications.${index}.has_expiry`, checked, {
                     shouldValidate: true,
                   });
                   if (!checked) {
-                    setValue(`certifications.${index}.expiryDate`, "", {
+                    setValue(`certifications.${index}.expiry_date`, "", {
                       shouldValidate: true,
                     });
                   }

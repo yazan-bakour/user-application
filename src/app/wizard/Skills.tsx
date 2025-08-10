@@ -43,7 +43,7 @@ const Skills = memo(({ isEdit }: SkillsProps) => {
   };
 
   const removeSkillEntry = (index: number) => {
-    if (skillFields.length > 1 && index > 0) {
+    if (skillFields.length > 1) {
       removeSkill(index);
     }
   };
@@ -52,26 +52,19 @@ const Skills = memo(({ isEdit }: SkillsProps) => {
     <div>
       <div className="flex justify-between items-center">
         <h4 className="text-md font-medium">Skills</h4>
-        {isEdit && (
-          <Button
-            variant="light"
-            color="primary"
-            size="sm"
-            onPress={addNewSkill}
-          >
-            Add Skill
-          </Button>
-        )}
+        <Button variant="light" color="primary" size="sm" onPress={addNewSkill}>
+          Add Skill
+        </Button>
       </div>
       <div className="flex flex-col">
         {skillFields.map((field, index) => (
           <div key={field.id} className="border-none">
             <div className="flex flex-col gap-4">
               <div className="flex justify-between items-center">
-                {index > 0 && (
+                {skillFields.length > 1 && (
                   <h5 className="text-sm font-medium">Skill #{index + 1}</h5>
                 )}
-                {isEdit && skillFields.length > 1 && index > 0 && (
+                {skillFields.length > 1 && (
                   <Button
                     color="danger"
                     variant="light"
@@ -83,7 +76,7 @@ const Skills = memo(({ isEdit }: SkillsProps) => {
                   </Button>
                 )}
               </div>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-3 md:gap-4">
                 <FormInput
                   type="text"
                   label="Skill Name"
