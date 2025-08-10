@@ -12,46 +12,14 @@ import {
   Button,
 } from "@heroui/react";
 import Link from "next/link";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { usePathname } from "next/navigation";
+import { useTheme } from "../contexts/ThemeContext";
 
 export function Header() {
-  const [isDarkMode, setIsDarkMode] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const pathname = usePathname();
-
-  // Check for saved theme preference or default to light mode
-  useEffect(() => {
-    const savedTheme = localStorage.getItem("theme");
-    const prefersDark = window.matchMedia(
-      "(prefers-color-scheme: dark)"
-    ).matches;
-
-    if (savedTheme === "dark" || (!savedTheme && prefersDark)) {
-      setIsDarkMode(true);
-      document.documentElement.classList.add("dark");
-      document.documentElement.classList.remove("light");
-    } else {
-      setIsDarkMode(false);
-      document.documentElement.classList.add("light");
-      document.documentElement.classList.remove("dark");
-    }
-  }, []);
-
-  const toggleTheme = () => {
-    const newDarkMode = !isDarkMode;
-    setIsDarkMode(newDarkMode);
-
-    if (newDarkMode) {
-      document.documentElement.classList.add("dark");
-      document.documentElement.classList.remove("light");
-      localStorage.setItem("theme", "dark");
-    } else {
-      document.documentElement.classList.add("light");
-      document.documentElement.classList.remove("dark");
-      localStorage.setItem("theme", "light");
-    }
-  };
+  const { theme, toggleTheme } = useTheme();
 
   const menuItems = [
     { name: "Home", href: "/" },
@@ -108,7 +76,7 @@ export function Header() {
         <NavbarItem className="flex items-center gap-2">
           <span className="text-sm text-foreground">☀️</span>
           <Switch
-            isSelected={isDarkMode}
+            isSelected={theme === "dark"}
             onValueChange={toggleTheme}
             aria-label="Toggle dark mode"
             size="sm"
