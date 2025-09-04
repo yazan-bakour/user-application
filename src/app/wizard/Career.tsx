@@ -118,15 +118,15 @@ const Career = memo(({ isEdit }: CareerProps) => {
                   }
                   {...register(`educations.${index}.university_name`, {
                     required: "University name is required",
-                    onChange: () =>
-                      trigger(`educations.${index}.university_name`),
+                    onChange: () => {
+                      trigger(`educations.${index}.university_name`);
+                    },
                   })}
                 />
 
                 <FormSelect
                   label="Degree Type"
                   placeholder="Select your degree type"
-                  isReadOnly={!isEdit}
                   isLoading={isLoading}
                   selectedKeys={
                     watchedValues.educations?.[index]?.degree_type
@@ -163,7 +163,9 @@ const Career = memo(({ isEdit }: CareerProps) => {
                   }
                   {...register(`educations.${index}.course_name`, {
                     required: "Course name is required",
-                    onChange: () => trigger(`educations.${index}.course_name`),
+                    onChange: () => {
+                      trigger(`educations.${index}.course_name`);
+                    },
                   })}
                 />
               </div>
@@ -222,8 +224,9 @@ const Career = memo(({ isEdit }: CareerProps) => {
                   }
                   {...register(`job_experiences.${index}.job_title`, {
                     required: "Job title is required",
-                    onChange: () =>
-                      trigger(`job_experiences.${index}.job_title`),
+                    onChange: () => {
+                      trigger(`job_experiences.${index}.job_title`);
+                    },
                   })}
                 />
 
@@ -242,8 +245,9 @@ const Career = memo(({ isEdit }: CareerProps) => {
                   }
                   {...register(`job_experiences.${index}.company_name`, {
                     required: "Company name is required",
-                    onChange: () =>
-                      trigger(`job_experiences.${index}.company_name`),
+                    onChange: () => {
+                      trigger(`job_experiences.${index}.company_name`);
+                    },
                   })}
                 />
 
@@ -262,8 +266,9 @@ const Career = memo(({ isEdit }: CareerProps) => {
                     }
                     {...register(`job_experiences.${index}.start_date`, {
                       required: "Start date is required",
-                      onChange: () =>
-                        trigger(`job_experiences.${index}.start_date`),
+                      onChange: () => {
+                        trigger(`job_experiences.${index}.start_date`);
+                      },
                     })}
                   />
 
@@ -293,8 +298,9 @@ const Career = memo(({ isEdit }: CareerProps) => {
                         ?.is_present_job
                         ? "End date is required"
                         : false,
-                      onChange: () =>
-                        trigger(`job_experiences.${index}.end_date`),
+                      onChange: () => {
+                        trigger(`job_experiences.${index}.end_date`);
+                      },
                     })}
                   />
                 </div>
@@ -350,8 +356,9 @@ const Career = memo(({ isEdit }: CareerProps) => {
                       value: 10,
                       message: "Description must be at least 10 characters",
                     },
-                    onChange: () =>
-                      trigger(`job_experiences.${index}.description`),
+                    onChange: () => {
+                      trigger(`job_experiences.${index}.description`);
+                    },
                   })}
                 />
               </div>

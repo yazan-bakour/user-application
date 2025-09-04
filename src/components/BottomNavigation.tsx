@@ -12,7 +12,7 @@ interface ButtonConfig extends Omit<ButtonProps, "children"> {
 interface BottomNavigationProps {
   leftButton?: ButtonConfig;
   rightButton?: ButtonConfig;
-  maxWidth?: "max-w-4xl" | "max-w-5xl" | "max-w-6xl" | "max-w-7xl";
+  maxWidth?: string;
   hasShadow?: boolean;
   className?: string;
   children?: ReactNode;
@@ -25,7 +25,7 @@ const BottomNavigation = ({
   maxWidth = "max-w-5xl",
   className = "",
   children,
-  isLoading = false,
+  isLoading,
 }: BottomNavigationProps) => {
   const renderButton = (buttonConfig: ButtonConfig | undefined) => {
     if (!buttonConfig) return null;
@@ -39,6 +39,7 @@ const BottomNavigation = ({
         radius="none"
         className={`px-8 py-3 ${buttonConfig.className || ""}`}
         isDisabled={buttonConfig.isDisabled || false}
+        isLoading={isLoading}
         {...buttonProps}
       >
         {text}
@@ -63,16 +64,19 @@ const BottomNavigation = ({
       <div className={`${maxWidth} mx-auto flex justify-between`}>
         {isLoading ? (
           <>
+            <div aria-live="polite" className="sr-only">
+              Loading buttons
+            </div>
             <Skeleton className="h-10 w-20 rounded" />
             <Skeleton className="h-10 w-32 rounded" />
           </>
-        ) : children ? (
-          children
         ) : (
-          <>
-            {renderButton(leftButton)}
-            {renderButton(rightButton)}
-          </>
+          children || (
+            <>
+              {renderButton(leftButton)}
+              {renderButton(rightButton)}
+            </>
+          )
         )}
       </div>
     </div>

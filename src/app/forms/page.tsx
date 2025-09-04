@@ -10,6 +10,7 @@ import {
   Button,
   Chip,
   Pagination,
+  addToast,
 } from "@heroui/react";
 import { useState, useEffect, useMemo } from "react";
 import Link from "next/link";
@@ -57,7 +58,11 @@ export default function FormsListPage() {
       setIsLoading(true);
 
       if (!API_BASE_URL) {
-        console.log("API not configured, using demo forms data");
+        addToast({
+          title: "Submission Error",
+          description: "API not configured, using demo forms localstorage data",
+          color: "warning",
+        });
         setForms(demoFormsData);
         setError(null);
         setIsLoading(false);
@@ -72,6 +77,11 @@ export default function FormsListPage() {
       });
 
       if (!response.ok) {
+        addToast({
+          title: `HTTP error! status: ${response.status}`,
+          description: response.statusText,
+          color: "danger",
+        });
         throw new Error(`HTTP error! status: ${response.status}`);
       }
 
@@ -81,11 +91,21 @@ export default function FormsListPage() {
         setForms(result.data);
         setError(null);
       } else {
+        addToast({
+          title: `Failed to fetch forms: ${result.success}`,
+          description: `Data count: ${result.count}`,
+          color: "danger",
+        });
         throw new Error("Failed to fetch forms");
       }
     } catch (err) {
+      addToast({
+        title: `${err}`,
+        description:
+          "Api is not working, you will see now localstorage demo data",
+        color: "danger",
+      });
       console.error("Error fetching forms:", err);
-      console.log("API failed, falling back to demo forms data");
 
       setForms(demoFormsData);
       setError(null);
@@ -363,7 +383,9 @@ export default function FormsListPage() {
       <BottomNavigation
         leftButton={{
           text: "Refresh",
-          onClick: fetchForms,
+          onClick: () => {
+            fetchForms();
+          },
           variant: "flat",
           color: "primary",
         }}
@@ -372,6 +394,7 @@ export default function FormsListPage() {
           href: "/wizard",
           variant: "solid",
           color: "primary",
+          isLoading: isLoading,
         }}
       />
     </div>

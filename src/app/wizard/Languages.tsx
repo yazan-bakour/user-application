@@ -95,13 +95,14 @@ const Languages = memo(({ isEdit }: LanguagesProps) => {
                   isInvalid={!isValid && !!errors.languages?.[index]?.name}
                   {...register(`languages.${index}.name`, {
                     required: "Language is required",
-                    onChange: () => trigger(`languages.${index}.name`),
+                    onChange: () => {
+                      trigger(`languages.${index}.name`);
+                    },
                   })}
                 />
                 <FormSelect
                   label="Proficiency Level"
                   placeholder="Select proficiency"
-                  isReadOnly={!isEdit}
                   isLoading={isLoading}
                   selectedKeys={
                     watchedValues.languages?.[index]?.proficiency

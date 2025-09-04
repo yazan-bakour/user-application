@@ -204,7 +204,7 @@ export default function LoadingSkeleton({
   const renderTableSkeleton = () => (
     <div className={`space-y-4 ${className}`}>
       {Array.from({ length: rows }).map((_, index) => (
-        <div key={index} className="flex gap-4">
+        <div key={rows + index} className="flex gap-4">
           <Skeleton className="h-12 w-full rounded" />
           <Skeleton className="h-12 w-full rounded" />
           <Skeleton className="h-12 w-full rounded" />
@@ -218,7 +218,7 @@ export default function LoadingSkeleton({
       <Skeleton className="h-6 w-48 rounded" />
       <div className="space-y-2">
         {Array.from({ length: rows }).map((_, index) => (
-          <Skeleton key={index} className="h-4 w-full rounded" />
+          <Skeleton key={rows + index} className="h-4 w-full rounded" />
         ))}
       </div>
     </div>
@@ -240,7 +240,7 @@ export default function LoadingSkeleton({
           {/* Progress Steps Skeleton */}
           <div className="flex justify-between w-full">
             {Array.from({ length: 4 }).map((_, index) => (
-              <div key={index} className="flex flex-col items-center">
+              <div key={index + length} className="flex flex-col items-center">
                 <Skeleton className="w-6 h-6 rounded-full" />
                 <Skeleton className="mt-1 h-3 w-16 rounded" />
               </div>
@@ -253,19 +253,11 @@ export default function LoadingSkeleton({
       <div className="max-w-7xl mx-auto px-4 py-8">
         <div className="space-y-6">
           {Array.from({ length: rows }).map((_, index) => (
-            <div key={index} className="space-y-3">
+            <div key={index + rows} className="space-y-3">
               <Skeleton className="h-4 w-32 rounded" />
               <Skeleton className="h-12 w-full rounded" />
             </div>
           ))}
-        </div>
-      </div>
-
-      {/* Bottom Navigation Skeleton */}
-      <div className="fixed bottom-0 left-0 right-0 bg-content1 border-t border-divider px-4 py-4">
-        <div className="max-w-7xl mx-auto flex justify-between">
-          <Skeleton className="h-10 w-20 rounded" />
-          <Skeleton className="h-10 w-20 rounded" />
         </div>
       </div>
     </div>

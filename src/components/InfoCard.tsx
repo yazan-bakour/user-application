@@ -28,25 +28,31 @@ export default function InfoCard({
   fields = [],
   children,
   emptyMessage = "No data available",
-}: InfoCardProps) {
+}: Readonly<InfoCardProps>) {
   const formatValue = (
     value: string | number | null,
     type: string = "text"
   ) => {
     if (!value) return "Not specified";
 
-    switch (type) {
-      case "date":
-        return new Date(value as string).toLocaleDateString("en-US", {
-          year: "numeric",
-          month: "long",
-          day: "numeric",
-        });
-      default:
-        return value;
+    if (type === "date") {
+      return new Date(value as string).toLocaleDateString("en-US", {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+      });
     }
+    return value;
   };
-
+  const getLinkHref = (href: string, type: string, value: string | number) => {
+    if (type === "email") {
+      return `mailto:${value}`;
+    }
+    if (type === "phone") {
+      return `tel:${value}`;
+    }
+    return href || value;
+  };
   const renderField = (field: FieldData, index?: number) => {
     const { label, value, type = "text", chipColor = "primary", href } = field;
 
@@ -65,12 +71,11 @@ export default function InfoCard({
     }
 
     if (type === "link" || type === "email" || type === "phone") {
-      const linkHref =
-        type === "email"
-          ? `mailto:${value}`
-          : type === "phone"
-          ? `tel:${value}`
-          : href || value;
+      const linkHref = getLinkHref(
+        href as string,
+        type,
+        value as string | number
+      );
 
       return (
         <div key={index}>

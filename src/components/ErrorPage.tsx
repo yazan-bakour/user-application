@@ -3,10 +3,10 @@ import { Button, Card, CardBody, Link } from "@heroui/react";
 export default function ErrorPage({
   error,
   reset,
-}: {
+}: Readonly<{
   error: string | null;
   reset: () => void;
-}) {
+}>) {
   return (
     <div className="container mx-auto px-4 py-8">
       <Card radius="none" shadow="none" className="max-w-md mx-auto">

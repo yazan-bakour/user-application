@@ -1,9 +1,8 @@
 "use client";
 
-import { Select, Skeleton } from "@heroui/react";
 import { forwardRef } from "react";
 import { FieldError } from "react-hook-form";
-import { SelectProps } from "@heroui/react";
+import { SelectProps, Select, Skeleton } from "@heroui/react";
 import { CollectionChildren } from "@react-types/shared";
 
 interface FormSelectProps extends Omit<SelectProps, "children" | "label"> {
@@ -11,7 +10,6 @@ interface FormSelectProps extends Omit<SelectProps, "children" | "label"> {
   error?: FieldError;
   defaultErrorMessage?: string;
   children: CollectionChildren<object>;
-  isReadOnly?: boolean;
   isLoading?: boolean;
   id?: string;
 }
@@ -22,7 +20,6 @@ const FormSelect = forwardRef<HTMLSelectElement, FormSelectProps>(
       label,
       placeholder = "Select an option",
       isDisabled = false,
-      isReadOnly = false,
       isInvalid,
       errorMessage,
       error,
@@ -42,7 +39,7 @@ const FormSelect = forwardRef<HTMLSelectElement, FormSelectProps>(
     const finalErrorMessage =
       errorMessage || error?.message || defaultErrorMessage;
 
-    const finalIsInvalid = isInvalid !== undefined ? isInvalid : !!error;
+    const finalIsInvalid = isInvalid ?? !!error;
 
     const ariaLabel = id ? `${id}-select` : label;
 

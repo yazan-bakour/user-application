@@ -81,7 +81,6 @@ const Portfolio = memo(({ isEdit }: PortfolioProps) => {
             <FormSelect
               label="Preferred Work Type"
               placeholder="Select work preference"
-              isReadOnly={!isEdit}
               isLoading={isLoading}
               isRequired
               selectedKeys={

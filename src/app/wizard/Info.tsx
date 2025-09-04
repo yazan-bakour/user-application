@@ -94,7 +94,9 @@ const Info = memo(({ isEdit }: InfoProps) => {
               value: 80,
               message: "First name must be less than 80 characters",
             },
-            onChange: () => trigger("first_name"),
+            onChange: () => {
+              trigger("first_name");
+            },
           })}
         />
 
@@ -113,7 +115,9 @@ const Info = memo(({ isEdit }: InfoProps) => {
               value: 100,
               message: "Last name must be less than 100 characters",
             },
-            onChange: () => trigger("last_name"),
+            onChange: () => {
+              trigger("last_name");
+            },
           })}
         />
       </div>
@@ -136,7 +140,9 @@ const Info = memo(({ isEdit }: InfoProps) => {
               value: /^\S+@\S+$/i,
               message: "Please enter a valid email address",
             },
-            onChange: () => trigger("email"),
+            onChange: () => {
+              trigger("email");
+            },
           })}
         />
       </div>
@@ -154,7 +160,9 @@ const Info = memo(({ isEdit }: InfoProps) => {
             isInvalid={!isValid && !!errors.date_of_birth}
             {...register("date_of_birth", {
               required: "Date of birth is required",
-              onChange: () => trigger("date_of_birth"),
+              onChange: () => {
+                trigger("date_of_birth");
+              },
             })}
           />
         </div>
@@ -183,7 +191,9 @@ const Info = memo(({ isEdit }: InfoProps) => {
                 value: /^[0-9]+$/,
                 message: "Mobile number must contain only numbers",
               },
-              onChange: () => trigger("mobile_number"),
+              onChange: () => {
+                trigger("mobile_number");
+              },
             })}
           />
         </div>
@@ -201,7 +211,9 @@ const Info = memo(({ isEdit }: InfoProps) => {
           isInvalid={!isValid && !!errors.street_address}
           {...register("street_address", {
             required: "Address is required",
-            onChange: () => trigger("street_address"),
+            onChange: () => {
+              trigger("street_address");
+            },
           })}
         />
       </div>
@@ -218,7 +230,9 @@ const Info = memo(({ isEdit }: InfoProps) => {
           isInvalid={!isValid && !!errors.city}
           {...register("city", {
             required: "City is required",
-            onChange: () => trigger("city"),
+            onChange: () => {
+              trigger("city");
+            },
           })}
         />
         <div className="col-span-2">
@@ -234,7 +248,9 @@ const Info = memo(({ isEdit }: InfoProps) => {
             isInvalid={!isValid && !!errors.state}
             {...register("state", {
               required: "State/Province is required",
-              onChange: () => trigger("state"),
+              onChange: () => {
+                trigger("state");
+              },
             })}
           />
         </div>
@@ -252,7 +268,9 @@ const Info = memo(({ isEdit }: InfoProps) => {
           isInvalid={!isValid && !!errors.postal_code}
           {...register("postal_code", {
             required: "Postal code is required",
-            onChange: () => trigger("postal_code"),
+            onChange: () => {
+              trigger("postal_code");
+            },
           })}
         />
         <FormInput
@@ -266,7 +284,9 @@ const Info = memo(({ isEdit }: InfoProps) => {
           isInvalid={!isValid && !!errors.country}
           {...register("country", {
             required: "Country is required",
-            onChange: () => trigger("country"),
+            onChange: () => {
+              trigger("country");
+            },
           })}
         />
       </div>
@@ -297,7 +317,9 @@ const Info = memo(({ isEdit }: InfoProps) => {
         type="hidden"
         {...register("developer", {
           required: "Please select if you are a developer",
-          onChange: () => trigger("developer"),
+          onChange: () => {
+            trigger("developer");
+          },
         })}
       />
 
@@ -317,7 +339,9 @@ const Info = memo(({ isEdit }: InfoProps) => {
                 watchedValues.developer === "no"
                   ? "Job title is required"
                   : false,
-              onChange: () => trigger("job"),
+              onChange: () => {
+                trigger("job");
+              },
             })}
           />
         </div>

@@ -30,7 +30,7 @@ export default function WizardLayout({
   formId,
   initialData,
   onDataLoaded,
-}: WizardLayoutProps) {
+}: Readonly<WizardLayoutProps>) {
   const [currentStep, setCurrentStep] = useState(0);
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
@@ -184,7 +184,7 @@ export default function WizardLayout({
           <div className="flex justify-between w-full overflow-x-auto">
             {stepNames.map((stepName, index) => (
               <div
-                key={index}
+                key={stepName}
                 className="flex flex-col items-center min-w-0 flex-shrink-0 px-1"
               >
                 <div
@@ -225,7 +225,10 @@ export default function WizardLayout({
         </FormProvider>
       </div>
 
-      <BottomNavigation className="bg-content1 border-divider">
+      <BottomNavigation
+        className="bg-content1 border-divider"
+        isLoading={isDataLoading}
+      >
         <Button
           variant="flat"
           color="default"

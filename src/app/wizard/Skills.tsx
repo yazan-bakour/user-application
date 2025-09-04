@@ -88,7 +88,9 @@ const Skills = memo(({ isEdit }: SkillsProps) => {
                   isInvalid={!isValid && !!errors.skills?.[index]?.name}
                   {...register(`skills.${index}.name`, {
                     required: "Skill name is required",
-                    onChange: () => trigger(`skills.${index}.name`),
+                    onChange: () => {
+                      trigger(`skills.${index}.name`);
+                    },
                   })}
                 />
                 <FormInput
@@ -101,13 +103,14 @@ const Skills = memo(({ isEdit }: SkillsProps) => {
                   error={errors.skills?.[index]?.category}
                   isInvalid={!isValid && !!errors.skills?.[index]?.category}
                   {...register(`skills.${index}.category`, {
-                    onChange: () => trigger(`skills.${index}.category`),
+                    onChange: () => {
+                      trigger(`skills.${index}.category`);
+                    },
                   })}
                 />
                 <FormSelect
                   label="Proficiency Level"
                   placeholder="Select level"
-                  isReadOnly={!isEdit}
                   isLoading={isLoading}
                   selectedKeys={
                     watchedValues.skills?.[index]?.level

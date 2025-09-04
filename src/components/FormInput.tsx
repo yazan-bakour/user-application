@@ -33,12 +33,14 @@ const FormInput = forwardRef<HTMLInputElement, FormInputProps>(
     ref
   ) => {
     const finalErrorMessage = errorMessage || error?.message;
-
-    const ariaLabel = id
-      ? `${id}-input`
-      : typeof label === "string"
-      ? label
-      : undefined;
+    let ariaLabel: string | undefined;
+    if (id) {
+      ariaLabel = `${id}-input`;
+    } else if (typeof label === "string") {
+      ariaLabel = label;
+    } else {
+      ariaLabel = undefined;
+    }
 
     const defaultClassNames = {
       inputWrapper: "border-b-1 border-primary",

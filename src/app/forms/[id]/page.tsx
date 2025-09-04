@@ -7,7 +7,6 @@ import { APIFormData } from "../../types";
 import InfoCard from "../../../components/InfoCard";
 import LoadingSkeleton from "../../../components/LoadingSkeleton";
 import ErrorPage from "@/components/ErrorPage";
-import { EmptyPage } from "@/components/EmptyPage";
 import BottomNavigation from "../../../components/BottomNavigation";
 import { useFormData } from "../../../hooks/useFormData";
 
@@ -430,6 +429,7 @@ export default function ViewFormPage() {
       </div>
 
       <BottomNavigation
+        isLoading={isLoading}
         leftButton={{
           text: "Back to Forms",
           href: "/forms",
